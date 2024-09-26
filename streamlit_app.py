@@ -219,8 +219,7 @@ with col2:
             "Recall", 
             "Precision", 
             "F1", 
-            "AUC",
-            "Decision"
+            "AUC"
         ],
         "Result": [
             f"{accuracy_train:.3f}", 
@@ -234,7 +233,7 @@ with col2:
         "Evaluate Test Set": [ 
             "Test set RMSE", 
             "Next Prediction Price", 
-            "", 
+            "Decision", 
             "", 
             "", 
             "", 
