@@ -216,7 +216,7 @@ metrics_data = {
         "Recall", 
         "Precision", 
         "F1", 
-        "AUC", 
+        "AUC"
         #"Test set RMSE", 
         #"Next Prediction Price"
     ],
@@ -227,7 +227,7 @@ metrics_data = {
         f"{recall:.2f}", 
         f"{precision:.2f}", 
         f"{f1_score:.2f}", 
-        f"{auc_knn:.2f}", 
+        f"{auc_knn:.2f}"
         #f"{rmse_test:.2f}", 
         #f"{next_price:.2f}"
     ]
