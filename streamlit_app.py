@@ -161,13 +161,14 @@ with col1:
     next_close_prediction = float(best_model.predict(last_data_point))
 
     df_close = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Close']])
-    if next_close_prediction <  calculate_MA(df_close):
+    MA_indicator = calculate_MA(df_close)
+    if next_close_prediction < MA_indicator:
         decision = 'Sell'
         st.write(df['MA'].iloc[-1])
     else:
         decision = 'Buy'
         st.write(df['MA'].iloc[-1])
-        #st.write(df_close['Close'].iloc[-1])    
+     
 
 # Right Column: Visualizations
 with col2:
