@@ -184,23 +184,8 @@ with col2:
     #st.line_chart(df[['Close', 'MA_7', 'EMA_12', 'EMA_22']])
 
   # Plotting the stock data on the right side using Matplotlib for more control
-    fig, ax = plt.subplots(figsize=(10, 6))
-    ax.plot(df.index, df['Close'], label='Close')
-    ax.plot(df.index, df['MA_7'], label='MA 7-day')
-    ax.plot(df.index, df['EMA_12'], label='EMA 12-day')
-    ax.plot(df.index, df['EMA_22'], label='EMA 22-day')
+    min_price = df[['Close', 'MA_7', 'EMA_12', 'EMA_22']].min().min() * 0.95
+    max_price = df[['Close', 'MA_7', 'EMA_12', 'EMA_22']].max().max() * 1.05
 
-    # Adjust y-axis limits to minimize blank space
-    ax.set_ylim([df['Close'].min() * 0.95, df['Close'].max() * 1.05])
-
-    # Improve x-axis date formatting for better readability
-    ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: pd.to_datetime(x).strftime('%b %d')))
-    fig.autofmt_xdate()  # Auto-rotate the date labels for better readability
-
-    # Set labels and title
-    ax.set_xlabel("Date")
-    ax.set_ylabel("Price")
-    ax.set_title(f"Price Chart of {ticker}")
-
-    ax.legend()
-    st.pyplot(fig)
+    # Create the line chart using Streamlit's built-in st.line_chart
+    st.line_chart(df[['Close', 'MA_7', 'EMA_12', 'EMA_22']], use_container_width=True, height=400)
