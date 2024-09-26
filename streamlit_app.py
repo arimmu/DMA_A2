@@ -1,4 +1,3 @@
-
 import streamlit as st
 import yfinance as yf
 import pandas as pd
@@ -11,18 +10,22 @@ import numpy as np
 # Streamlit app title
 st.title("Stock Market Prediction App")
 
-# Date inputs from user
-startDate = st.date_input("Start Date", value=pd.to_datetime("2024-08-01"))
-endDate = st.date_input("End Date", value=pd.to_datetime("2024-09-24"))
-tf = "1d"  # Interval
+# Define two columns: The first one for user inputs, the second one for the visualizations
+col1, col2 = st.columns([1, 2])
 
-# Load data from Yahoo Finance
-ticker = st.text_input("Enter Stock Ticker", value="1155.KL")
-df = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Open', 'Close', 'Volume', 'High', 'Low']])
+# Date inputs from user in the first column
+with col1:
+    startDate = st.date_input("Start Date", value=pd.to_datetime("2024-08-01"))
+    endDate = st.date_input("End Date", value=pd.to_datetime("2024-09-24"))
+    tf = "1d"  # Interval
 
-# Display the raw data
-st.write("Stock Data")
-st.dataframe(df)
+    # Load data from Yahoo Finance
+    ticker = st.text_input("Enter Stock Ticker", value="1155.KL")
+    df = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Open', 'Close', 'Volume', 'High', 'Low']])
+
+    # Display the raw data in the first column
+    st.write("Stock Data")
+    st.dataframe(df)
 
 # Feature Engineering
 df['Lag 1-day'] = df['Close'].shift(1)
@@ -109,60 +112,61 @@ knn = KNeighborsClassifier(n_neighbors=3)
 knn.fit(X_train, y_train)
 y_pred = knn.predict(X_test)
 
-# Display Model Performance Metrics
-st.write("---k-NN Classifier with selected features---")
-st.write(f"Accuracy on training set: {knn.score(X_train, y_train):.3f}")
-st.write(f"Accuracy on test set: {knn.score(X_test, y_test):.3f}")
-st.write(f"Accuracy = {accuracy_score(y_test, y_pred):.2f}")
-st.write(f"Recall = {recall_score(y_test, y_pred):.2f}")
-st.write(f"Precision = {precision_score(y_test, y_pred):.2f}")
-st.write(f"F1 = {f1_score(y_test, y_pred):.2f}")
+# In the right column, display model performance metrics and visualization
+with col2:
+    # Display Model Performance Metrics
+    st.write("---k-NN Classifier with selected features---")
+    st.write(f"Accuracy on training set: {knn.score(X_train, y_train):.3f}")
+    st.write(f"Accuracy on test set: {knn.score(X_test, y_test):.3f}")
+    st.write(f"Accuracy = {accuracy_score(y_test, y_pred):.2f}")
+    st.write(f"Recall = {recall_score(y_test, y_pred):.2f}")
+    st.write(f"Precision = {precision_score(y_test, y_pred):.2f}")
+    st.write(f"F1 = {f1_score(y_test, y_pred):.2f}")
 
-# AUC Calculation
-prob_knn = knn.predict_proba(X_test)[:, 1]
-auc_knn = roc_auc_score(y_test, prob_knn)
-st.write(f'AUC: {auc_knn:.2f}')
+    # AUC Calculation
+    prob_knn = knn.predict_proba(X_test)[:, 1]
+    auc_knn = roc_auc_score(y_test, prob_knn)
+    st.write(f'AUC: {auc_knn:.2f}')
 
-# K-NN Regressor for Prediction
-knn_reg = KNeighborsRegressor()
+    # K-NN Regressor for Prediction
+    knn_reg = KNeighborsRegressor()
 
-# Parameter grid for KNN regressor
-params_knn = {
-    'n_neighbors': [3, 5, 7, 9],
-    'weights': ['uniform', 'distance'],
-    'p': [1, 2]
-}
+    # Parameter grid for KNN regressor
+    params_knn = {
+        'n_neighbors': [3, 5, 7, 9],
+        'weights': ['uniform', 'distance'],
+        'p': [1, 2]
+    }
 
-# Grid Search
-grid_knn = GridSearchCV(estimator=knn_reg, param_grid=params_knn, scoring='neg_mean_squared_error', cv=3, n_jobs=-1)
-grid_knn.fit(X_train, y_train)
+    # Grid Search
+    grid_knn = GridSearchCV(estimator=knn_reg, param_grid=params_knn, scoring='neg_mean_squared_error', cv=3, n_jobs=-1)
+    grid_knn.fit(X_train, y_train)
 
-# Display Best Hyperparameters
-best_hyperparams = grid_knn.best_params_
-st.write('Best hyperparameters:', best_hyperparams)
+    # Display Best Hyperparameters
+    best_hyperparams = grid_knn.best_params_
+    st.write('Best hyperparameters:', best_hyperparams)
 
-# Best model predictions
-best_model = grid_knn.best_estimator_
-y_pred = best_model.predict(X_test)
+    # Best model predictions
+    best_model = grid_knn.best_estimator_
+    y_pred = best_model.predict(X_test)
 
-# RMSE Calculation
-rmse_test = np.sqrt(mean_squared_error(y_test, y_pred))
-st.write(f'Test set RMSE of K-NN regressor: {rmse_test:.2f}')
+    # RMSE Calculation
+    rmse_test = np.sqrt(mean_squared_error(y_test, y_pred))
+    st.write(f'Test set RMSE of K-NN regressor: {rmse_test:.2f}')
 
-# Real-time Prediction for Next 3 Days
-last_data_point = X_test.iloc[-1, :].values.reshape(1, -1)
-prediction_close_price = []
+    # Real-time Prediction for Next 3 Days
+    last_data_point = X_test.iloc[-1, :].values.reshape(1, -1)
+    prediction_close_price = []
 
-for i in range(3):
-    next_close = best_model.predict(last_data_point)
-    prediction_close_price.append(next_close[0])
-    last_data_point = np.roll(last_data_point, shift=1, axis=1)
-    last_data_point[0, 0] = next_close
+    for i in range(3):
+        next_close = best_model.predict(last_data_point)
+        prediction_close_price.append(next_close[0])
+        last_data_point = np.roll(last_data_point, shift=1, axis=1)
+        last_data_point[0, 0] = next_close
 
-st.write('Predicted close price for next 1 day:', prediction_close_price[0])
-st.write('Predicted close price for next 2 days:', prediction_close_price[1])
-st.write('Predicted close price for next 3 days:', prediction_close_price[2])
+    st.write('Predicted close price for next 1 day:', prediction_close_price[0])
+    st.write('Predicted close price for next 2 days:', prediction_close_price[1])
+    st.write('Predicted close price for next 3 days:', prediction_close_price[2])
 
-# Plotting the stock data
-#st.line_chart(df[['Close', 'MA_7', 'EMA_12', 'EMA_22']])
-st.line_chart(df[['Close']])
+    # Plotting the stock data on the right side
+    st.line_chart(df[['Close', 'MA_7', 'EMA_12', 'EMA_22']])
