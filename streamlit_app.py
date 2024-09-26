@@ -212,7 +212,7 @@ with col2:
         ],
         "Result": [
             f"{rmse_test:.2f}", 
-            next_close_prediction.round(2),
+            round(next_close_prediction,2),
             decision,
             "",
             "",
