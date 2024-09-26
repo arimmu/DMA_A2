@@ -198,7 +198,6 @@ with col1:
 with col2:
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.plot(df_close.index, df_close['Close'], label='Current Price')
-    ax.plot(df_c.index, df['Close'], label='Prediction Price')
 
     # Improve x-axis date formatting for better readability
     #ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: pd.to_datetime(x).strftime('%b %d')))
