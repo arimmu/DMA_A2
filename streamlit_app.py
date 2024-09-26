@@ -232,11 +232,7 @@ metrics_data = {
     ],
     "Evaluate the test set": [
         "Test set RMSE", 
-        #"Next Prediction Price"
-    ],
-    "Result": [
-        f"{rmse_test:.2f}", 
-        #f"{best_model.predict(last_data_point):.2f}"
+        "Next Prediction Price"
     ]
 }
 # Convert the dictionary to a DataFrame
