@@ -242,7 +242,7 @@ with col2:
         ],
         "Result": [
             f"{rmse_test:.2f}", 
-            df_close['Close'].iloc[0], 
+            df_close['Close'].iloc[-1: ], 
             f"{next_close_prediction:.2f}", 
             decision, 
             "", 
