@@ -107,7 +107,7 @@ with col1:
     y = df['signal']  # Target variable
 
     # Train-Test-Split
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=10)
 
     # Model Creation: K-NN Classifier
     knn = KNeighborsClassifier(n_neighbors=3)
@@ -128,14 +128,14 @@ with col1:
     
     X = df[selected_features].drop("Close", axis=1)  # Features
     y = df['Close']
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3, random_state=10)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state=10)
     
     # K-NN Regressor for Prediction
     knn_reg = KNeighborsRegressor()
 
     # Parameter grid for KNN regressor
     params_knn = {
-        'n_neighbors': [3, 5, 7],
+        'n_neighbors': [3, 5, 7, 9],
         'weights': ['uniform', 'distance'],
         'p': [1, 2]
     }
@@ -161,9 +161,9 @@ with col1:
     next_close_prediction = float(best_model.predict(last_data_point))
 
     df_close = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Close']])
-    if next_close_prediction < df['EMA_12'].iloc[-1]:
+    if next_close_prediction <  df_close['Close'].iloc[-1]:
         decision = 'Sell'
-        st.write(df['EMA_12'].iloc[-1])
+        st.write( df_close['Close'].iloc[-1])
     else:
         decision = 'Buy'
         #st.write(df_close['Close'].iloc[-1])    
