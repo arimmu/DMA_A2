@@ -197,7 +197,7 @@ with col1:
 # Right Column: Visualizations
 with col2:
     fig, ax = plt.subplots(figsize=(10, 6))
-    ax.plot(df.index, df_close['Close'], label='Current Price')
+    ax.plot(df_close.index, df_close['Close'], label='Current Price')
     #ax.plot(df.index, next_close_prediction, label='Prediction Price')
 
     # Improve x-axis date formatting for better readability
