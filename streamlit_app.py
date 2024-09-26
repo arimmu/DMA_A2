@@ -236,7 +236,7 @@ metrics_data = {
     ],
     "Result": [
         f"{rmse_test:.2f}", 
-        f"{best_model.predict(last_data_point):.2f}"
+        #f"{best_model.predict(last_data_point):.2f}"
     ]
 }
 # Convert the dictionary to a DataFrame
