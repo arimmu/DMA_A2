@@ -157,17 +157,20 @@ with col1:
 
     # Real-time Prediction for Next 3 Days
     last_data_point = X_test.iloc[-1, :].values.reshape(1, -1)
-    prediction_close_price = []
+    next_close_prediction = best_model.predict(last_data_point)
+    st.write((next_close_prediction)
 
-    for i in range(3):
-        next_close = best_model.predict(last_data_point)
-        prediction_close_price.append(next_close[0])
-        last_data_point = np.roll(last_data_point, shift=1, axis=1)
-        last_data_point[0, 0] = next_close
+    #prediction_close_price = []
 
-    st.write('Predicted close price for next 1 day:', prediction_close_price[0])
-    st.write('Predicted close price for next 2 days:', prediction_close_price[1])
-    st.write('Predicted close price for next 3 days:', prediction_close_price[2])
+    #for i in range(3):
+     #   next_close = best_model.predict(last_data_point)
+      #  prediction_close_price.append(next_close[0])
+       # last_data_point = np.roll(last_data_point, shift=1, axis=1)
+        #last_data_point[0, 0] = next_close
+
+    #st.write('Predicted close price for next 1 day:', prediction_close_price[0])
+    #st.write('Predicted close price for next 2 days:', prediction_close_price[1])
+    #st.write('Predicted close price for next 3 days:', prediction_close_price[2])
 
 # Right Column: Visualizations
 with col2:
