@@ -166,6 +166,7 @@ with col1:
         st.write(df['MA'].iloc[-1])
     else:
         decision = 'Buy'
+        st.write(df['MA'].iloc[-1])
         #st.write(df_close['Close'].iloc[-1])    
 
 # Right Column: Visualizations
