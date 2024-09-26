@@ -172,12 +172,13 @@ with col1:
     last_data_point = X_test.iloc[-1, :].values.reshape(1, -1)
     next_close_prediction = float(best_model.predict(last_data_point))
 
-    if next_close_prediction < df['Close'].iloc[-1]:
+    df_close = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Close']])
+    if next_close_prediction < df_close['Close'].iloc[-1]:
         decision = 'Sell'
-        st.write(df['Close'].iloc[-1])
+        st.write(df_close['Close'].iloc[-1])
     else:
         decision = 'Buy'
-        st.write(df['Close'].iloc[-1])
+        st.write(df_close['Close'].iloc[-1])
        
     #st.write(next_close_prediction)
     #next_price = next_close_prediction
