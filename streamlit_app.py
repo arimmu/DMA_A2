@@ -140,7 +140,7 @@ with col1:
     
     X = df[selected_features].drop("Close", axis=1)  # Features
     y = df['Close']
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.4, random_state=40)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.4, random_state=10)
     
     # K-NN Regressor for Prediction
     knn_reg = KNeighborsRegressor()
@@ -249,7 +249,7 @@ with col2:
             "Test set RMSE",  
             "Next 1 Day Price Prediction", 
             "Next 2 Day Price Prediction", 
-            "Next 2 Day Price Prediction", 
+            "Next 3 Day Price Prediction", 
             "Short-Term Decision", 
             "",
             ""
