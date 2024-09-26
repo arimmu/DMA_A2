@@ -38,7 +38,7 @@ with col1:
     df['Next 3-day'] = df['Close'].shift(-3)
 
     def calculate_MA(data):
-        data['MA'] = data['Close'].rolling(window=12).mean()
+        data['MA'] = data['Close'].rolling(window=7).mean()
         return data
 
     def calculate_EMA_MACD(data):
@@ -107,7 +107,7 @@ with col1:
     y = df['signal']  # Target variable
 
     # Train-Test-Split
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=40)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=15)
 
     # Model Creation: K-NN Classifier
     knn = KNeighborsClassifier(n_neighbors=3)
@@ -128,7 +128,7 @@ with col1:
     
     X = df[selected_features].drop("Close", axis=1)  # Features
     y = df['Close']
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3, random_state=40)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.4, random_state=15)
     
     # K-NN Regressor for Prediction
     knn_reg = KNeighborsRegressor()
@@ -161,7 +161,7 @@ with col1:
     next_close_prediction = float(best_model.predict(last_data_point))
 
     df_close = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Close']])
-    if next_close_prediction <  df['MA'].iloc[-1]:
+    if next_close_prediction <  calculate_MA(df_close):
         decision = 'Sell'
         st.write(df['MA'].iloc[-1])
     else:
