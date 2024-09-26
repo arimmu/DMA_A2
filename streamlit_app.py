@@ -257,8 +257,8 @@ with col2:
         "Result": [
             f"{rmse_test:.2f}", 
             predictions[-1],
+            predictions[0],
             predictions[1],
-            predictions[2],
             short_decision,  
             next_close_prediction,
             ""
