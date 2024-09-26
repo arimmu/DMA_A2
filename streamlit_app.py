@@ -1,9 +1,10 @@
 import streamlit as st
 import yfinance as yf
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score, mean_squared_error
+from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score, roc_auc_score, mean_squared_error
 import numpy as np
 import matplotlib.pyplot as plt
 from datetime import timedelta
@@ -15,11 +16,9 @@ col1, col2 = st.columns([1, 5])
 
 # Left Column: Inputs and Model Metrics
 with col1:
-    
     ticker = st.text_input("Enter Stock Ticker", value="1155.KL")
-    # Date inputs from user
     startDate = st.date_input("Start Date", value=pd.to_datetime("2024-08-01"))
-    endDate = st.date_input("End Date", value=pd.to_datetime("2024-09-25")) + timedelta(days=1)
+    endDate = st.date_input("End Date", value=pd.to_datetime("2024-09-24")) + timedelta(days=1)
     tf = "1d"  # Interval
 
     # Load data from Yahoo Finance
@@ -87,71 +86,84 @@ with col1:
     # Drop rows with any NaN values
     df = df.dropna()
 
-    # Create signal 
+    # Initialize the LabelEncoder
+    label_encoder = LabelEncoder()
+
+    # Create signal
     df['signal'] = np.where(df['MACD'] > df['MACD_Signal'], 1, 0)
 
-    # Selected features for classification
-    selected_features_class = ['EMA_22', 'ROC_5', 'RSI', 'EMA_12', 'MA_7', 'Lag 3-day']
-    X_class = df[selected_features_class]  # Features
-    y_class = df['signal']  # Target variable
+    # Selected features for prediction
+    selected_features = ['EMA_22', 'ROC_5', 'RSI', 'EMA_12', 'MA_7', 'Close', 'Next 2-day',
+                         'MACD_Signal', 'Price_range', 'Lag 3-day', 'Next 1-day', 'Low',
+                         'changes_%_in_volume', 'Volatility_7', 'Lag 2-day', 'Next 3-day',
+                         'MACD', 'High', 'Open', 'Lag 1-day']
 
-    # Train-Test-Split for Classification
-    X_train_class, X_test_class, y_train_class, y_test_class = train_test_split(X_class, y_class, test_size=0.4, random_state=42)
+    X = df[selected_features]  # Features
+    y = df['signal']  # Target variable
+
+    # Train-Test-Split for classification
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=42)
 
     # Model Creation: Random Forest Classifier
-    rf_classifier = RandomForestClassifier(n_estimators=100, random_state=42)
+    rf_clf = RandomForestClassifier(n_estimators=100, random_state=42)
+    rf_clf.fit(X_train, y_train)
+    y_pred = rf_clf.predict(X_test)
 
-    # Train the model
-    rf_classifier.fit(X_train_class, y_train_class)
+    accuracy_train = rf_clf.score(X_train, y_train)
+    accuracy_test = rf_clf.score(X_test, y_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    recall = recall_score(y_test, y_pred)
+    precision = precision_score(y_test, y_pred)
+    f1 = f1_score(y_test, y_pred)
 
-    # Predictions
-    y_pred_class = rf_classifier.predict(X_test_class)
+    # AUC Calculation
+    prob_rf = rf_clf.predict_proba(X_test)[:, 1]
+    auc_rf = roc_auc_score(y_test, prob_rf)
 
-    # Calculate performance metrics for classification
-    accuracy = accuracy_score(y_test_class, y_pred_class)
-    recall = recall_score(y_test_class, y_pred_class)
-    precision = precision_score(y_test_class, y_pred_class)
-    f1 = f1_score(y_test_class, y_pred_class)
+    # Drop 'Close' for regression
+    X = df[selected_features].drop("Close", axis=1)
+    y = df['Close']
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=10)
 
-    # Regression for Price Prediction
-    X_reg = df[selected_features_class + ['Close']].drop("Close", axis=1)  # Features
-    y_reg = df['Close']
-    X_train_reg, X_test_reg, y_train_reg, y_test_reg = train_test_split(X_reg, y_reg, test_size=0.3, random_state=10)
+    # Random Forest Regressor for Prediction
+    rf_reg = RandomForestRegressor(n_estimators=100, random_state=42)
 
-    # Model Creation: Random Forest Regressor
-    rf_regressor = RandomForestRegressor(n_estimators=100, random_state=42)
+    # Parameter grid for Random Forest Regressor
+    params_rf = {
+        'n_estimators': [50, 100, 150],
+        'max_depth': [5, 10, 20],
+        'min_samples_split': [2, 5, 10]
+    }
 
-    # Train the model
-    rf_regressor.fit(X_train_reg, y_train_reg)
+    # Grid Search
+    grid_rf = GridSearchCV(estimator=rf_reg, param_grid=params_rf, scoring='neg_mean_squared_error', cv=3, n_jobs=-1)
+    grid_rf.fit(X_train, y_train)
 
-    # Predictions
-    y_pred_reg = rf_regressor.predict(X_test_reg)
+    # Display Best Hyperparameters
+    best_hyperparams = grid_rf.best_params_
 
-    # RMSE Calculation for Regression
-    rmse_test = np.sqrt(mean_squared_error(y_test_reg, y_pred_reg))
+    # Best model predictions
+    best_model = grid_rf.best_estimator_
+    y_pred = best_model.predict(X_test)
+
+    # RMSE Calculation
+    rmse_test = np.sqrt(mean_squared_error(y_test, y_pred))
 
     # Real-time Prediction for Next 1 Day
-    last_data_point = X_test_reg.iloc[-1, :].values.reshape(1, -1)
-    next_close_prediction = float(rf_regressor.predict(last_data_point))
+    last_data_point = X_test.iloc[-1, :].values.reshape(1, -1)
+    next_close_prediction = float(best_model.predict(last_data_point))
 
-    # Check and print prediction against the target price (10.70)
-    target_price = 10.70
-    if next_close_prediction >= target_price:
-        decision = 'Buy'
-    else:
+    df_close = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Close']])
+    if next_close_prediction < df_close['Close'].iloc[-1]:
         decision = 'Sell'
-
-    # Display target and predicted price
-    st.write(f"Predicted Close Price for Next Day: {round(next_close_prediction, 2)}")
-    st.write(f"Target Price: {target_price}")
-    st.write(f"Decision: {decision}")
+    else:
+        decision = 'Buy'
 
 # Right Column: Visualizations
 with col2:
     fig, ax = plt.subplots(figsize=(10, 6))
-    ax.plot(df.index, df['Close'], label='Current Price')
+    ax.plot(df_close.index, df_close['Close'], label='Current Price')
 
-    # Set labels and title
     ax.set_xlabel("Date")
     ax.set_ylabel("Price")
     ax.set_title(f"Price Chart of {ticker}")
@@ -162,28 +174,39 @@ with col2:
     # Table of model performance metrics
     metrics_data = {
         "Classifier Performance Metrics": [
+            "Accuracy on training set", 
+            "Accuracy on test set", 
             "Accuracy", 
             "Recall", 
             "Precision", 
-            "F1"
+            "F1", 
+            "AUC"
         ],
         "Score": [
+            f"{accuracy_train:.3f}", 
+            f"{accuracy_test:.3f}", 
             f"{accuracy:.2f}", 
             f"{recall:.2f}", 
             f"{precision:.2f}", 
-            f"{f1:.2f}"
+            f"{f1:.2f}", 
+            f"{auc_rf:.2f}"
         ],
         "Prediction Metrics": [ 
             "Test set RMSE",  
             "Next 1 Day Price Prediction", 
-            "Decision",
+            "Decision", 
+            "", 
+            "", 
+            "",
             ""
-            
         ],
         "Result": [
             f"{rmse_test:.2f}", 
-            round(next_close_prediction, 2),
+            round(next_close_prediction,2),
             decision,
+            "",
+            "",
+            "",  
             ""
         ]
     }
