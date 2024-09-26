@@ -162,27 +162,16 @@ with col1:
 
     df_close = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Close']])
     if next_close_prediction < df_close['Close'].iloc[-1]:
-        short_decision = 'Sell'
+        decision = 'Sell'
         #st.write(df_close['Close'].iloc[-1])
     else:
-        long_decision = 'Buy'
-        #st.write(df_close['Close'].iloc[-1])
-
-    if next_close_prediction < df['EMA_22'].iloc[-1]:
-        long_decision = 'Sell'
-        #st.write(df_close['Close'].iloc[-1])
-    else:
-        long_decision = 'Buy'
-    
+        decision = 'Buy'
+        #st.write(df_close['Close'].iloc[-1])    
 
 # Right Column: Visualizations
 with col2:
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.plot(df_close.index, df_close['Close'], label='Current Price')
-
-    # Improve x-axis date formatting for better readability
-    #ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: pd.to_datetime(x).strftime('%b %d')))
-    #fig.autofmt_xdate()  # Auto-rotate the date labels for better readability
 
     # Set labels and title
     ax.set_xlabel("Date")
@@ -215,7 +204,7 @@ with col2:
         "Prediction Metrics": [ 
             "Test set RMSE",  
             "Next 1 Day Price Prediction", 
-            "", 
+            "Decision", 
             "", 
             "", 
             "",
@@ -223,8 +212,8 @@ with col2:
         ],
         "Result": [
             f"{rmse_test:.2f}", 
-            next_close_prediction,
-            "",
+            next_close_prediction.round(2),
+            decision,
             "",
             "",
             "",  
