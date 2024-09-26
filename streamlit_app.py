@@ -177,7 +177,7 @@ with col1:
         st.write(df['MA_7'].iloc[-1])
     else:
         decision = 'Buy'
-        st.write(df['MA_7'].iloc[-1]
+        st.write(df['MA_7'].iloc[-1])
     #st.write(next_close_prediction)
     #next_price = next_close_prediction
     #prediction_close_price = []
