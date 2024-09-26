@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
 from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score, roc_auc_score, mean_squared_error
 import numpy as np
+mport matplotlib.pyplot as plt
 
 # Streamlit app title
 st.title("Stock Market Prediction App")
