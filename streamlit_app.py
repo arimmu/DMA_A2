@@ -176,12 +176,15 @@ with col2:
         "Prediction Metrics": [ 
             "Test set RMSE",  
             "Next 1 Day Price Prediction", 
-            "Decision"
+            "Decision",
+            ""
+            
         ],
         "Result": [
             f"{rmse_test:.2f}", 
             round(next_close_prediction, 2),
-            decision
+            decision,
+            ""
         ]
     }
 
