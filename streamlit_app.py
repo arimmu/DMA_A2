@@ -129,6 +129,10 @@ with col1:
     auc_knn = roc_auc_score(y_test, prob_knn)
     st.write(f'AUC: {auc_knn:.2f}')
 
+    X = df[selected_features].drop("Close", axis=1)  # Features
+    y = df['close']
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.4, random_state=42)
+    
     # K-NN Regressor for Prediction
     knn_reg = KNeighborsRegressor()
 
