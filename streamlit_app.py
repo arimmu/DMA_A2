@@ -29,8 +29,8 @@ with col1:
     df = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Open', 'Close', 'Volume', 'High', 'Low']])
 
     # Display the raw data
-    st.write("Stock Data")
-    st.dataframe(df)
+    # st.write("Stock Data")
+    # st.dataframe(df)
 
     # Feature Engineering
     df['Lag 1-day'] = df['Close'].shift(1)
@@ -229,6 +229,22 @@ metrics_data = {
         f"{auc_knn:.2f}"
         #f"{rmse_test:.2f}", 
         #f"{next_price:.2f}"
+    ],
+    "Evaluate Test Set": [ 
+        "Test set RMSE", 
+        "Next Prediction Price", 
+        "", 
+        "", 
+        "",
+        ""
+    ],
+    "More Results": [
+        f"{rmse_test:.2f}", 
+        f"{next_price:.2f}", 
+        "", 
+        "", 
+        "",
+        ""
     ]
 }
 # Convert the dictionary to a DataFrame
