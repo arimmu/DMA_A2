@@ -179,13 +179,23 @@ with col1:
 
 # Right Column: Visualizations
 with col2:
-   # Adjust y-axis limits by narrowing the range to eliminate gaps
-    min_price = df[['Close', 'MA_7', 'EMA_12', 'EMA_22']].min().min() * 0.98
-    max_price = df[['Close', 'MA_7', 'EMA_12', 'EMA_22']].max().max() * 1.02
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.plot(df.index, df['Close'], label='Close')
+    ax.plot(df.index, df['MA_7'], label='MA 7-day')
+    ax.plot(df.index, df['EMA_12'], label='EMA 12-day')
+    ax.plot(df.index, df['EMA_22'], label='EMA 22-day')
 
-    # Filter the dataframe to show a tighter y-range (relevant values)
-    filtered_df = df[['Close', 'MA_7', 'EMA_12', 'EMA_22']].copy()
-    filtered_df = filtered_df[(filtered_df > min_price) & (filtered_df < max_price)]
+    # Adjust y-axis limits to minimize blank space
+  #  ax.set_ylim([df['Close'].min() * 0.95, df['Close'].max() * 1.05])
 
-    # Display the line chart without unnecessary gaps
-    st.line_chart(filtered_df, use_container_width=True)
+    # Improve x-axis date formatting for better readability
+    ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: pd.to_datetime(x).strftime('%b %d')))
+    fig.autofmt_xdate()  # Auto-rotate the date labels for better readability
+
+    # Set labels and title
+    ax.set_xlabel("Date")
+    ax.set_ylabel("Price")
+    ax.set_title(f"Price Chart of {ticker}")
+
+    ax.legend()
+    st.pyplot(fig)
