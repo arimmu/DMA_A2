@@ -197,3 +197,36 @@ with col2:
 
     ax.legend()
     st.pyplot(fig)
+
+# Model Performance Metrics Table
+# Create a dictionary for the table
+metrics_data = {
+    "Model Performance Metrics": [
+        "Accuracy on training set", 
+        "Accuracy on test set", 
+        "Accuracy", 
+        "Recall", 
+        "Precision", 
+        "F1", 
+        "AUC", 
+        "Test set RMSE", 
+        "Next Prediction Price"
+    ],
+    "Result": [
+        f"{accuracy_train:.2f}", 
+        f"{accuracy_test:.2f}", 
+        f"{accuracy:.2f}", 
+        f"{recall:.2f}", 
+        f"{precision:.2f}", 
+        f"{f1:.2f}", 
+        f"{auc:.2f}", 
+        f"{rmse_test:.2f}", 
+        f"{next_prediction_price:.2f}"
+    ]
+}
+# Convert the dictionary to a DataFrame
+metrics_df = pd.DataFrame(metrics_data)
+
+# Display the table below the visualizations
+st.write("### Model Performance Metrics")
+st.table(metrics_df)
