@@ -19,8 +19,8 @@ with col1:
     
     ticker = st.text_input("Enter Stock Ticker", value="1155.KL")
     # Date inputs from user
-    startDate = st.date_input("Start Date", value=pd.to_datetime("2024-08-01"))
-    endDate = st.date_input("End Date", value=pd.to_datetime("2024-09-24")) + timedelta(days=1)
+    startDate = st.date_input("Start Date", value=pd.to_datetime("2024-08-05"))
+    endDate = st.date_input("End Date", value=pd.to_datetime("2024-09-23")) + timedelta(days=1)
     tf = "1d"  # Interval
 
     # Load data from Yahoo Finance
