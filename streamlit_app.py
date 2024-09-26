@@ -229,10 +229,6 @@ metrics_data = {
         f"{auc_knn:.2f}"
         #f"{rmse_test:.2f}", 
         #f"{next_price:.2f}"
-    ],
-    "Evaluate the test set": [
-        "Test set RMSE", 
-        "Next Prediction Price"
     ]
 }
 # Convert the dictionary to a DataFrame
