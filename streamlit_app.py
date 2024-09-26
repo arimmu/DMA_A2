@@ -228,8 +228,8 @@ metrics_data = {
         f"{precision:.2f}", 
         f"{f1_score:.2f}", 
         f"{auc_knn:.2f}", 
-        f"{rmse_test:.2f}", 
-        f"{next_price:.2f}"
+        #f"{rmse_test:.2f}", 
+        #f"{next_price:.2f}"
     ]
 }
 # Convert the dictionary to a DataFrame
