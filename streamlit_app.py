@@ -172,7 +172,7 @@ with col1:
     last_data_point = X_test.iloc[-1, :].values.reshape(1, -1)
     next_close_prediction = float(best_model.predict(last_data_point))
 
-    if next_close_prediction < df_model3['MA_7'].iloc[-1] and next_close_prediction < df_model3['EMA_12'].iloc[-1]:
+    if next_close_prediction < df['MA_7'].iloc[-1] and next_close_prediction < df['EMA_12'].iloc[-1]:
         decision = 'Sell'
     else:
         decision = 'Buy'
