@@ -162,7 +162,7 @@ with col1:
 
     df_close = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Close']])
     calculate_MA(df_close)
-    if next_close_prediction < df_close['MA'].iloc[-1]:
+    if next_close_prediction < df['MA'].iloc[-1]:
         decision = 'Sell'
         st.write(df['MA'].iloc[-1])
     else:
