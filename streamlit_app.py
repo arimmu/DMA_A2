@@ -118,19 +118,26 @@ with col1:
     y_pred = knn.predict(X_test)
 
     # Display Model Performance Metrics
-    st.write("---k-NN Classifier with selected features---")
-    st.write(f"Accuracy on training set: {knn.score(X_train, y_train):.3f}")
-    st.write(f"Accuracy on test set: {knn.score(X_test, y_test):.3f}")
-    st.write(f"Accuracy = {accuracy_score(y_test, y_pred):.2f}")
-    st.write(f"Recall = {recall_score(y_test, y_pred):.2f}")
-    st.write(f"Precision = {precision_score(y_test, y_pred):.2f}")
-    st.write(f"F1 = {f1_score(y_test, y_pred):.2f}")
+    #st.write("---k-NN Classifier with selected features---")
+    #st.write(f"Accuracy on training set: {knn.score(X_train, y_train):.3f}")
+    #st.write(f"Accuracy on test set: {knn.score(X_test, y_test):.3f}")
+    #st.write(f"Accuracy = {accuracy_score(y_test, y_pred):.2f}")
+    #st.write(f"Recall = {recall_score(y_test, y_pred):.2f}")
+    #st.write(f"Precision = {precision_score(y_test, y_pred):.2f}")
+    #st.write(f"F1 = {f1_score(y_test, y_pred):.2f}")
 
+    accuracy_train = knn.score(X_train, y_train)
+    accuracy_test = knn.score(X_test, y_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    recall = recall_score(y_test, y_pred)
+    precision = precision_score(y_test, y_pred)
+    f1_score = f1_score(y_test, y_pred)
+ 
     # AUC Calculation
     prob_knn = knn.predict_proba(X_test)[:, 1]
     auc_knn = roc_auc_score(y_test, prob_knn)
-    st.write(f'AUC: {auc_knn:.2f}')
-
+    #st.write(f'AUC: {auc_knn:.2f}')
+    
     X = df[selected_features].drop("Close", axis=1)  # Features
     y = df['Close']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.4, random_state=42)
@@ -159,12 +166,12 @@ with col1:
 
     # RMSE Calculation
     rmse_test = np.sqrt(mean_squared_error(y_test, y_pred))
-    st.write(f'Test set RMSE of K-NN regressor: {rmse_test:.2f}')
+    #st.write(f'Test set RMSE of K-NN regressor: {rmse_test:.2f}')
 
     # Real-time Prediction for Next 3 Days
     last_data_point = X_test.iloc[-1, :].values.reshape(1, -1)
     next_close_prediction = best_model.predict(last_data_point)
-    st.write(next_close_prediction)
+    #st.write(next_close_prediction)
 
     #prediction_close_price = []
 
@@ -213,15 +220,15 @@ metrics_data = {
         "Next Prediction Price"
     ],
     "Result": [
-        f"{accuracy_train:.2f}", 
-        f"{accuracy_test:.2f}", 
+        f"{accuracy_train:.3f}", 
+        f"{accuracy_test:.3f}", 
         f"{accuracy:.2f}", 
         f"{recall:.2f}", 
         f"{precision:.2f}", 
-        f"{f1:.2f}", 
-        f"{auc:.2f}", 
+        f"{f1_score:.2f}", 
+        f"{auc_knn:.2f}", 
         f"{rmse_test:.2f}", 
-        f"{next_prediction_price:.2f}"
+        f"{next_close_prediction:.2f}"
     ]
 }
 # Convert the dictionary to a DataFrame
