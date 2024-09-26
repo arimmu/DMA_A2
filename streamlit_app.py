@@ -170,7 +170,7 @@ with col1:
 
     # Real-time Prediction for Next 1 Day
     last_data_point = X_test.iloc[-1, :].values.reshape(1, -1)
-    next_close_prediction = float(best_model.predict(last_data_point))
+    #next_close_prediction = float(best_model.predict(last_data_point))
 
     predictions = []
     
@@ -246,21 +246,21 @@ with col2:
             f"{auc_knn:.2f}"
         ],
         "Prediction Metrics": [ 
-            "Test set RMSE", 
-            "Next Day Price Prediction", 
+            "Test set RMSE",  
             "Next 1 Day Price Prediction", 
             "Next 2 Day Price Prediction", 
             "Next 2 Day Price Prediction", 
             "Short-Term Decision", 
+            "",
             ""
         ],
         "Result": [
             f"{rmse_test:.2f}", 
-            f"{next_close_prediction:.2f}", 
             predictions[0],
             predictions[1],
             predictions[2],
             short_decision,  
+            "",
             ""
         ]
     }
