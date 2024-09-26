@@ -202,8 +202,8 @@ with col2:
     ax.plot(df.index, df['EMA_22'], label='EMA 22-day')
 
     # Improve x-axis date formatting for better readability
-    ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: pd.to_datetime(x).strftime('%b %d')))
-    fig.autofmt_xdate()  # Auto-rotate the date labels for better readability
+    #ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: pd.to_datetime(x).strftime('%b %d')))
+    #fig.autofmt_xdate()  # Auto-rotate the date labels for better readability
 
     # Set labels and title
     ax.set_xlabel("Date")
