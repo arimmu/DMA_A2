@@ -174,8 +174,10 @@ with col1:
 
     if next_close_prediction < df['MA_7'].iloc[-1] and next_close_prediction < df['EMA_12'].iloc[-1]:
         decision = 'Sell'
+        st.write(df['MA_7'].iloc[-1])
     else:
         decision = 'Buy'
+        st.write(df['MA_7'].iloc[-1])
        
     #st.write(next_close_prediction)
     #next_price = next_close_prediction
@@ -222,7 +224,7 @@ with col2:
             "F1", 
             "AUC"
         ],
-        "Result": [
+        "Score": [
             f"{accuracy_train:.3f}", 
             f"{accuracy_test:.3f}", 
             f"{accuracy:.2f}", 
