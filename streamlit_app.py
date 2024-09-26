@@ -12,7 +12,7 @@ st.title("Stock Market Prediction App")
 
 # Define two columns: Left for inputs and model metrics, Right for visualizations
 # Here, col1 is set to take 1 part of the width, and col2 is set to take 3 parts.
-col1, col2 = st.columns([1, 3])
+col1, col2 = st.columns([1, 6])
 
 # Left Column: Inputs and Model Metrics
 with col1:
