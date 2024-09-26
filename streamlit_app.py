@@ -8,7 +8,7 @@ from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_sc
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-
+from datetime import timedelta
 # Streamlit app title
 st.title("Stock Market Prediction App")
 
@@ -22,7 +22,7 @@ with col1:
     ticker = st.text_input("Enter Stock Ticker", value="1155.KL")
     # Date inputs from user
     startDate = st.date_input("Start Date", value=pd.to_datetime("2024-08-01"))
-    endDate = st.date_input("End Date", value=pd.to_datetime("2024-09-24"))
+    endDate = st.date_input("End Date", value=pd.to_datetime("2024-09-24")) + timedelta(days=1)
     tf = "1d"  # Interval
 
     # Load data from Yahoo Finance
