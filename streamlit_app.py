@@ -16,13 +16,14 @@ col1, col2 = st.columns([1, 3])
 
 # Left Column: Inputs and Model Metrics
 with col1:
+    
+    ticker = st.text_input("Enter Stock Ticker", value="1155.KL")
     # Date inputs from user
     startDate = st.date_input("Start Date", value=pd.to_datetime("2024-08-01"))
     endDate = st.date_input("End Date", value=pd.to_datetime("2024-09-24"))
     tf = "1d"  # Interval
 
     # Load data from Yahoo Finance
-    ticker = st.text_input("Enter Stock Ticker", value="1155.KL")
     df = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Open', 'Close', 'Volume', 'High', 'Low']])
 
     # Display the raw data
