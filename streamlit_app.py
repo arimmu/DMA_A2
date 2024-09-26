@@ -171,6 +171,7 @@ with col1:
     # Real-time Prediction for Next 3 Days
     last_data_point = X_test.iloc[-1, :].values.reshape(1, -1)
     next_close_prediction = best_model.predict(last_data_point)
+    next_price = next_close_prediction
     #st.write(next_close_prediction)
 
     #prediction_close_price = []
@@ -228,7 +229,7 @@ metrics_data = {
         f"{f1_score:.2f}", 
         f"{auc_knn:.2f}", 
         f"{rmse_test:.2f}", 
-        f"{next_close_prediction:.2f}"
+        f"{next_price:.2f}"
     ]
 }
 # Convert the dictionary to a DataFrame
