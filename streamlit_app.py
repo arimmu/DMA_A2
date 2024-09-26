@@ -12,8 +12,6 @@ from datetime import timedelta
 # Streamlit app title
 st.title("Stock Market Prediction App")
 
-# Define two columns: Left for inputs and model metrics, Right for visualizations
-# Here, col1 is set to take 1 part of the width, and col2 is set to take 3 parts.
 col1, col2 = st.columns([1, 5])
 
 # Left Column: Inputs and Model Metrics
@@ -28,7 +26,6 @@ with col1:
     # Load data from Yahoo Finance
     df = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Open', 'Close', 'Volume', 'High', 'Low']])
 
-    # Display the raw data
     # st.write("Stock Data")
     # st.dataframe(df)
 
@@ -117,15 +114,6 @@ with col1:
     knn.fit(X_train, y_train)
     y_pred = knn.predict(X_test)
 
-    # Display Model Performance Metrics
-    #st.write("---k-NN Classifier with selected features---")
-    #st.write(f"Accuracy on training set: {knn.score(X_train, y_train):.3f}")
-    #st.write(f"Accuracy on test set: {knn.score(X_test, y_test):.3f}")
-    #st.write(f"Accuracy = {accuracy_score(y_test, y_pred):.2f}")
-    #st.write(f"Recall = {recall_score(y_test, y_pred):.2f}")
-    #st.write(f"Precision = {precision_score(y_test, y_pred):.2f}")
-    #st.write(f"F1 = {f1_score(y_test, y_pred):.2f}")
-
     accuracy_train = knn.score(X_train, y_train)
     accuracy_test = knn.score(X_test, y_test)
     accuracy = accuracy_score(y_test, y_pred)
@@ -170,15 +158,7 @@ with col1:
 
     # Real-time Prediction for Next 1 Day
     last_data_point = X_test.iloc[-1, :].values.reshape(1, -1)
-    #next_close_prediction = float(best_model.predict(last_data_point))
-
-    predictions = []
-    
-    for i in range(3):
-        next_close_prediction = float(best_model.predict(last_data_point))
-        predictions.append(next_close_prediction)
-        last_data_point = np.roll(last_data_point, shift=-1)  # Shift the data point to update the window
-        last_data_point[0, -1] = next_close_prediction
+    next_close_prediction = float(best_model.predict(last_data_point))
 
     df_close = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Close']])
     if next_close_prediction < df_close['Close'].iloc[-1]:
@@ -193,20 +173,7 @@ with col1:
         #st.write(df_close['Close'].iloc[-1])
     else:
         long_decision = 'Buy'
-        
-    #st.write(next_close_prediction)
-    #next_price = next_close_prediction
-    #prediction_close_price = []
-
-    #for i in range(3):
-     #   next_close = best_model.predict(last_data_point)
-      #  prediction_close_price.append(next_close[0])
-       # last_data_point = np.roll(last_data_point, shift=1, axis=1)
-        #last_data_point[0, 0] = next_close
-
-    #st.write('Predicted close price for next 1 day:', prediction_close_price[0])
-    #st.write('Predicted close price for next 2 days:', prediction_close_price[1])
-    #st.write('Predicted close price for next 3 days:', prediction_close_price[2])
+    
 
 # Right Column: Visualizations
 with col2:
@@ -248,19 +215,19 @@ with col2:
         "Prediction Metrics": [ 
             "Test set RMSE",  
             "Next 1 Day Price Prediction", 
-            "Next 2 Day Price Prediction", 
-            "Next 3 Day Price Prediction", 
-            "Short-Term Decision", 
+            "", 
+            "", 
+            "", 
             "",
             ""
         ],
         "Result": [
             f"{rmse_test:.2f}", 
-            predictions[-1],
-            predictions[0],
-            predictions[1],
-            short_decision,  
             next_close_prediction,
+            "",
+            "",
+            "",
+            "",  
             ""
         ]
     }
