@@ -204,57 +204,53 @@ with col2:
 
     ax.legend()
     st.pyplot(fig)
-    # Model Performance Metrics Table
-# Create a dictionary for the table
+
+    # Table of model performance metrics
     metrics_data = {
         "Model Performance Metrics": [
-        "Accuracy on training set", 
-        "Accuracy on test set", 
-        "Accuracy", 
-        "Recall", 
-        "Precision", 
-        "F1", 
-        "AUC"
-        #"Test set RMSE", 
-        #"Next Prediction Price"
-    ],
-    "Result": [
-        f"{accuracy_train:.3f}", 
-        f"{accuracy_test:.3f}", 
-        f"{accuracy:.2f}", 
-        f"{recall:.2f}", 
-        f"{precision:.2f}", 
-        f"{f1_score:.2f}", 
-        f"{auc_knn:.2f}"
-        #f"{rmse_test:.2f}", 
-        #f"{next_price:.2f}"
-    ],
-    "Evaluate Test Set": [ 
-        "Test set RMSE", 
-        "Next Prediction Price", 
-        "", 
-        "", 
-        "",
-        "",
-        ""
-    ],
-    "More Results": [
-        f"{rmse_test:.2f}", 
-        next_close_prediction, 
-        "", 
-        "", 
-        "",
-        "",
-        ""
-    ]
-}
-# Convert the dictionary to a DataFrame
-metrics_df = pd.DataFrame(metrics_data)
+            "Accuracy on training set", 
+            "Accuracy on test set", 
+            "Accuracy", 
+            "Recall", 
+            "Precision", 
+            "F1", 
+            "AUC"
+        ],
+        "Result": [
+            f"{accuracy_train:.3f}", 
+            f"{accuracy_test:.3f}", 
+            f"{accuracy:.2f}", 
+            f"{recall:.2f}", 
+            f"{precision:.2f}", 
+            f"{f1_score:.2f}", 
+            f"{auc_knn:.2f}"
+        ],
+        "Evaluate Test Set": [ 
+            "Test set RMSE", 
+            "Next Prediction Price", 
+            "", 
+            "", 
+            "", 
+            "", 
+            ""
+        ],
+        "More Results": [
+            f"{rmse_test:.2f}", 
+            f"{next_close_prediction:.2f}", 
+            "", 
+            "", 
+            "", 
+            "", 
+            ""
+        ]
+    }
 
-# Display the table below the visualizations
-st.write("### Model Performance Metrics")
-st.table(metrics_df)
+    # Convert the dictionary to a DataFrame
+    metrics_df = pd.DataFrame(metrics_data)
 
+    # Display the table below the chart
+    st.write("### Model Performance Metrics")
+    st.table(metrics_df)
     
 
 
