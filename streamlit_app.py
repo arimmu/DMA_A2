@@ -232,7 +232,7 @@ metrics_data = {
     ],
     "Evaluate the test set": [
         "Test set RMSE", 
-        "Next Prediction Price"
+        #"Next Prediction Price"
     ],
     "Result": [
         f"{rmse_test:.2f}", 
