@@ -204,11 +204,10 @@ with col2:
 
     ax.legend()
     st.pyplot(fig)
-
-# Model Performance Metrics Table
+    # Model Performance Metrics Table
 # Create a dictionary for the table
-metrics_data = {
-    "Model Performance Metrics": [
+    metrics_data = {
+        "Model Performance Metrics": [
         "Accuracy on training set", 
         "Accuracy on test set", 
         "Accuracy", 
@@ -255,3 +254,7 @@ metrics_df = pd.DataFrame(metrics_data)
 # Display the table below the visualizations
 st.write("### Model Performance Metrics")
 st.table(metrics_df)
+
+    
+
+
