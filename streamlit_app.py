@@ -14,7 +14,7 @@ st.title("Stock Market Prediction App")
 
 # Define two columns: Left for inputs and model metrics, Right for visualizations
 # Here, col1 is set to take 1 part of the width, and col2 is set to take 3 parts.
-col1, col2 = st.columns([1, 6])
+col1, col2 = st.columns([1, 5])
 
 # Left Column: Inputs and Model Metrics
 with col1:
@@ -158,7 +158,7 @@ with col1:
 
     # Display Best Hyperparameters
     best_hyperparams = grid_knn.best_params_
-    st.write('Best hyperparameters:', best_hyperparams)
+    #st.write('Best hyperparameters:', best_hyperparams)
 
     # Best model predictions
     best_model = grid_knn.best_estimator_
@@ -171,7 +171,12 @@ with col1:
     # Real-time Prediction for Next 3 Days
     last_data_point = X_test.iloc[-1, :].values.reshape(1, -1)
     next_close_prediction = float(best_model.predict(last_data_point))
-    st.write(next_close_prediction)
+
+    if next_close_prediction < df_model3['MA_7'].iloc[-1] and next_close_prediction < df_model3['EMA_12'].iloc[-1]:
+        decision = 'Sell'
+    else:
+        decision = 'Buy'
+    #st.write(next_close_prediction)
     #next_price = next_close_prediction
     #prediction_close_price = []
 
@@ -214,7 +219,8 @@ with col2:
             "Recall", 
             "Precision", 
             "F1", 
-            "AUC"
+            "AUC",
+            "Decision"
         ],
         "Result": [
             f"{accuracy_train:.3f}", 
@@ -237,7 +243,7 @@ with col2:
         "More Results": [
             f"{rmse_test:.2f}", 
             f"{next_close_prediction:.2f}", 
-            "", 
+            decision, 
             "", 
             "", 
             "", 
