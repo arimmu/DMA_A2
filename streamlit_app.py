@@ -2,7 +2,7 @@ import streamlit as st
 import yfinance as yf
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression, LinearRegression
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score, mean_squared_error
 import numpy as np
 import matplotlib.pyplot as plt
@@ -19,7 +19,7 @@ with col1:
     ticker = st.text_input("Enter Stock Ticker", value="1155.KL")
     # Date inputs from user
     startDate = st.date_input("Start Date", value=pd.to_datetime("2024-08-01"))
-    endDate = st.date_input("End Date", value=pd.to_datetime("2024-09-23")) + timedelta(days=1)
+    endDate = st.date_input("End Date", value=pd.to_datetime("2024-09-25")) + timedelta(days=1)
     tf = "1d"  # Interval
 
     # Load data from Yahoo Finance
@@ -98,14 +98,14 @@ with col1:
     # Train-Test-Split for Classification
     X_train_class, X_test_class, y_train_class, y_test_class = train_test_split(X_class, y_class, test_size=0.4, random_state=42)
 
-    # Model Creation: Logistic Regression
-    log_reg = LogisticRegression(max_iter=200)
+    # Model Creation: Random Forest Classifier
+    rf_classifier = RandomForestClassifier(n_estimators=100, random_state=42)
 
     # Train the model
-    log_reg.fit(X_train_class, y_train_class)
+    rf_classifier.fit(X_train_class, y_train_class)
 
     # Predictions
-    y_pred_class = log_reg.predict(X_test_class)
+    y_pred_class = rf_classifier.predict(X_test_class)
 
     # Calculate performance metrics for classification
     accuracy = accuracy_score(y_test_class, y_pred_class)
@@ -116,31 +116,40 @@ with col1:
     # Regression for Price Prediction
     X_reg = df[selected_features_class + ['Close']].drop("Close", axis=1)  # Features
     y_reg = df['Close']
-    X_train_reg, X_test_reg, y_train_reg, y_test_reg = train_test_split(X_reg, y_reg, test_size=0.4, random_state=42)
+    X_train_reg, X_test_reg, y_train_reg, y_test_reg = train_test_split(X_reg, y_reg, test_size=0.3, random_state=10)
 
-    # Model Creation: Linear Regression
-    lin_reg = LinearRegression()
+    # Model Creation: Random Forest Regressor
+    rf_regressor = RandomForestRegressor(n_estimators=100, random_state=42)
 
     # Train the model
-    lin_reg.fit(X_train_reg, y_train_reg)
+    rf_regressor.fit(X_train_reg, y_train_reg)
 
     # Predictions
-    y_pred_reg = lin_reg.predict(X_test_reg)
+    y_pred_reg = rf_regressor.predict(X_test_reg)
 
     # RMSE Calculation for Regression
     rmse_test = np.sqrt(mean_squared_error(y_test_reg, y_pred_reg))
 
     # Real-time Prediction for Next 1 Day
     last_data_point = X_test_reg.iloc[-1, :].values.reshape(1, -1)
-    next_close_prediction = float(lin_reg.predict(last_data_point))
+    next_close_prediction = float(rf_regressor.predict(last_data_point))
 
-    df_close = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Close']])
-    decision = 'Buy' if next_close_prediction >= df_close['Close'].iloc[-1] else 'Sell'
+    # Check and print prediction against the target price (10.70)
+    target_price = 10.70
+    if next_close_prediction >= target_price:
+        decision = 'Buy'
+    else:
+        decision = 'Sell'
+
+    # Display target and predicted price
+    st.write(f"Predicted Close Price for Next Day: {round(next_close_prediction, 2)}")
+    st.write(f"Target Price: {target_price}")
+    st.write(f"Decision: {decision}")
 
 # Right Column: Visualizations
 with col2:
     fig, ax = plt.subplots(figsize=(10, 6))
-    ax.plot(df_close.index, df_close['Close'], label='Current Price')
+    ax.plot(df.index, df['Close'], label='Current Price')
 
     # Set labels and title
     ax.set_xlabel("Date")
@@ -167,15 +176,12 @@ with col2:
         "Prediction Metrics": [ 
             "Test set RMSE",  
             "Next 1 Day Price Prediction", 
-            "Decision",
-            ""
-            
+            "Decision"
         ],
         "Result": [
             f"{rmse_test:.2f}", 
             round(next_close_prediction, 2),
-            decision,
-            ""
+            decision
         ]
     }
 
