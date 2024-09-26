@@ -19,7 +19,7 @@ with col1:
     ticker = st.text_input("Enter Stock Ticker", value="1155.KL")
     # Date inputs from user
     startDate = st.date_input("Start Date", value=pd.to_datetime("2024-08-01"))
-    endDate = st.date_input("End Date", value=pd.to_datetime("2024-09-24")) + timedelta(days=1)
+    endDate = st.date_input("End Date", value=pd.to_datetime("2024-09-23")) + timedelta(days=1)
     tf = "1d"  # Interval
 
     # Load data from Yahoo Finance
@@ -96,7 +96,7 @@ with col1:
     y_class = df['signal']  # Target variable
 
     # Train-Test-Split for Classification
-    X_train_class, X_test_class, y_train_class, y_test_class = train_test_split(X_class, y_class, test_size=0.4, random_state=10)
+    X_train_class, X_test_class, y_train_class, y_test_class = train_test_split(X_class, y_class, test_size=0.4, random_state=42)
 
     # Model Creation: Logistic Regression
     log_reg = LogisticRegression(max_iter=200)
@@ -116,7 +116,7 @@ with col1:
     # Regression for Price Prediction
     X_reg = df[selected_features_class + ['Close']].drop("Close", axis=1)  # Features
     y_reg = df['Close']
-    X_train_reg, X_test_reg, y_train_reg, y_test_reg = train_test_split(X_reg, y_reg, test_size=0.4, random_state=10)
+    X_train_reg, X_test_reg, y_train_reg, y_test_reg = train_test_split(X_reg, y_reg, test_size=0.4, random_state=42)
 
     # Model Creation: Linear Regression
     lin_reg = LinearRegression()
