@@ -1,4 +1,4 @@
-pip install yfinance
+pip install streamlit yfinance scikit-learn
 
 import streamlit as st
 import yfinance as yf
