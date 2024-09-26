@@ -97,7 +97,7 @@ with col1:
     # Initialize the LabelEncoder
     label_encoder = LabelEncoder()
 
-    # Create signal column (example, modify as needed)
+    # Create signal 
     df['signal'] = np.where(df['MACD'] > df['MACD_Signal'], 1, 0)
 
     # Selected features for prediction
@@ -168,9 +168,17 @@ with col1:
     rmse_test = np.sqrt(mean_squared_error(y_test, y_pred))
     #st.write(f'Test set RMSE of K-NN regressor: {rmse_test:.2f}')
 
-    # Real-time Prediction for Next 3 Days
+    # Real-time Prediction for Next 1 Day
     last_data_point = X_test.iloc[-1, :].values.reshape(1, -1)
     next_close_prediction = float(best_model.predict(last_data_point))
+
+    predictions = []
+    
+    for _ in range(3):
+    # Predict the next closing price
+        next_close_prediction = float(best_model.predict(last_data_point))
+        predictions.append(next_close_prediction)
+    
 
     df_close = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Close']])
     if next_close_prediction < df_close['Close'].iloc[-1]:
