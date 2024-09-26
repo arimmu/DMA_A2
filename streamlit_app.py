@@ -172,12 +172,12 @@ with col1:
     last_data_point = X_test.iloc[-1, :].values.reshape(1, -1)
     next_close_prediction = float(best_model.predict(last_data_point))
 
-    if next_close_prediction < df['Volatility_7'].iloc[-1] and next_close_prediction < df['Volatility_7'].iloc[-1]:
+    if next_close_prediction < df['Close'].iloc[-1]:
         decision = 'Sell'
-        st.write(df['Volatility_7'].iloc[-1])
+        st.write(df['Close'].iloc[-1])
     else:
         decision = 'Buy'
-        st.write(df['Volatility_7'].iloc[-1])
+        st.write(df['Close'].iloc[-1])
        
     #st.write(next_close_prediction)
     #next_price = next_close_prediction
