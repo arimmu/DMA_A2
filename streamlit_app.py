@@ -233,20 +233,20 @@ with col2:
         ],
         "Prediction Metrics": [ 
             "Test set RMSE", 
-            "Current Price",
             "Next Prediction Price", 
             "Decision", 
+            "", 
             "", 
             "", 
             ""
         ],
         "Result": [
             f"{rmse_test:.2f}", 
-            df_close['Close'].iloc[-1], 
             f"{next_close_prediction:.2f}", 
             decision, 
             "", 
-            "",  
+            "",
+            "", 
             ""
         ]
     }
