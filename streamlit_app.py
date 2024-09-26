@@ -7,6 +7,7 @@ from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
 from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score, roc_auc_score, mean_squared_error
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 # Streamlit app title
 st.title("Stock Market Prediction App")
