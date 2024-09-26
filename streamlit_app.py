@@ -174,8 +174,10 @@ with col1:
 
     if next_close_prediction < df['MA_7'].iloc[-1] and next_close_prediction < df['EMA_12'].iloc[-1]:
         decision = 'Sell'
+        st.write(df['MA_7'].iloc[-1])
     else:
         decision = 'Buy'
+        st.write(df['MA_7'].iloc[-1]
     #st.write(next_close_prediction)
     #next_price = next_close_prediction
     #prediction_close_price = []
@@ -212,7 +214,7 @@ with col2:
 
     # Table of model performance metrics
     metrics_data = {
-        "Model Performance Metrics": [
+        "Classifier Performance Metrics": [
             "Accuracy on training set", 
             "Accuracy on test set", 
             "Accuracy", 
@@ -230,7 +232,7 @@ with col2:
             f"{f1_score:.2f}", 
             f"{auc_knn:.2f}"
         ],
-        "Evaluate Test Set": [ 
+        "Prediction Metrics": [ 
             "Test set RMSE", 
             "Next Prediction Price", 
             "Decision", 
@@ -239,7 +241,7 @@ with col2:
             "", 
             ""
         ],
-        "More Results": [
+        "Result": [
             f"{rmse_test:.2f}", 
             f"{next_close_prediction:.2f}", 
             decision, 
