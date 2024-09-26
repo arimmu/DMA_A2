@@ -217,8 +217,8 @@ metrics_data = {
         "Precision", 
         "F1", 
         "AUC", 
-        "Test set RMSE", 
-        "Next Prediction Price"
+        #"Test set RMSE", 
+        #"Next Prediction Price"
     ],
     "Result": [
         f"{accuracy_train:.3f}", 
