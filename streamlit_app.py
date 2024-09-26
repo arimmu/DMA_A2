@@ -250,7 +250,7 @@ with col2:
             "Next Prediction Price", 
             "Short-Term Decision", 
             "Long-Term Decision", 
-            "", 
+            "s", 
             "", 
             ""
         ],
@@ -259,7 +259,7 @@ with col2:
             f"{next_close_prediction:.2f}", 
             short_decision, 
             long_decision,  
-            "",
+            predictions[-1],
             "", 
             ""
         ]
