@@ -247,20 +247,20 @@ with col2:
         ],
         "Prediction Metrics": [ 
             "Test set RMSE", 
-            "Next Prediction Price", 
+            "Next Day Price Prediction", 
+            "Next 1 Day Price Prediction", 
+            "Next 2 Day Price Prediction", 
+            "Next 2 Day Price Prediction", 
             "Short-Term Decision", 
-            "Long-Term Decision", 
-            "s", 
-            "", 
             ""
         ],
         "Result": [
             f"{rmse_test:.2f}", 
             f"{next_close_prediction:.2f}", 
-            short_decision, 
-            long_decision,  
-            predictions[-1],
-            "", 
+            predictions[0],
+            predictions[1],
+            predictions[2],
+            short_decision,  
             ""
         ]
     }
