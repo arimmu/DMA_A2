@@ -172,8 +172,8 @@ with col1:
 # Right Column: Visualizations
 with col2:
     fig, ax = plt.subplots(figsize=(10, 6))
-    ax.plot(df_close.index, df['Close'], label='Current Price')
-    ax.plot(df_close.index, df['MA'], label='Current Price')
+    ax.plot(df.index, df['Close'], label='Price')
+    ax.plot(df.index, df['MA'], label='MA')
 
     # Set labels and title
     ax.set_xlabel("Date")
