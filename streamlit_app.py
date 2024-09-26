@@ -38,7 +38,7 @@ with col1:
     df['Next 3-day'] = df['Close'].shift(-3)
 
     def calculate_MA(data):
-        data['MA_7'] = data['Close'].rolling(window=7).mean()
+        data['MA'] = data['Close'].rolling(window=50).mean()
         return data
 
     def calculate_EMA_MACD(data):
@@ -98,7 +98,7 @@ with col1:
     df['signal'] = np.where(df['MACD'] > df['MACD_Signal'], 1, 0)
 
     # Selected features for prediction
-    selected_features = ['EMA_22', 'ROC_5', 'RSI', 'EMA_12', 'MA_7', 'Close', 'Next 2-day',
+    selected_features = ['EMA_22', 'ROC_5', 'RSI', 'EMA_12', 'MA', 'Close', 'Next 2-day',
                          'MACD_Signal', 'Price_range', 'Lag 3-day', 'Next 1-day', 'Low',
                          'changes_%_in_volume', 'Volatility_7', 'Lag 2-day', 'Next 3-day',
                          'MACD', 'High', 'Open', 'Lag 1-day']
