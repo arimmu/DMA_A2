@@ -38,7 +38,7 @@ with col1:
     df['Next 3-day'] = df['Close'].shift(-3)
 
     def calculate_MA(data):
-        data['MA'] = data['Close'].rolling(window=50).mean()
+        data['MA'] = data['Close'].rolling(window=12).mean()
         return data
 
     def calculate_EMA_MACD(data):
