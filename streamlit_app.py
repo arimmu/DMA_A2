@@ -161,7 +161,7 @@ with col1:
     next_close_prediction = float(best_model.predict(last_data_point))
 
     df_close = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Close']])
-    if next_close_prediction < df'EMA_12'].iloc[-1]:
+    if next_close_prediction < df['EMA_12'].iloc[-1]:
         decision = 'Sell'
         st.write(df['EMA_12'].iloc[-1])
     else:
