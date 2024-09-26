@@ -200,8 +200,7 @@ with col2:
     ax.plot(df.index, df['MA_7'], label='MA 7-day')
     ax.plot(df.index, df['EMA_12'], label='EMA 12-day')
     ax.plot(df.index, df['EMA_22'], label='EMA 22-day')
-    ax.plot(df.index, df['changes_%_in_price'], label='changes_%_in_price')
-    ax.plot(df.index, df['Volatility_7'], label='Volatility_7')
+
     # Improve x-axis date formatting for better readability
     #ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: pd.to_datetime(x).strftime('%b %d')))
     #fig.autofmt_xdate()  # Auto-rotate the date labels for better readability
