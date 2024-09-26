@@ -164,4 +164,5 @@ st.write('Predicted close price for next 2 days:', prediction_close_price[1])
 st.write('Predicted close price for next 3 days:', prediction_close_price[2])
 
 # Plotting the stock data
-st.line_chart(df[['Close', 'MA_7', 'EMA_12', 'EMA_22']])
+#st.line_chart(df[['Close', 'MA_7', 'EMA_12', 'EMA_22']])
+st.line_chart(df[['Close']])
