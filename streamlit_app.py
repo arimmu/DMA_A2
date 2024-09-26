@@ -236,6 +236,7 @@ metrics_data = {
         "", 
         "", 
         "",
+        "",
         ""
     ],
     "More Results": [
@@ -243,6 +244,7 @@ metrics_data = {
         f"{next_close_prediction:.2f}", 
         "", 
         "", 
+        "",
         "",
         ""
     ]
