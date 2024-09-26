@@ -30,7 +30,7 @@ with col1:
 
     # Display the raw data
     # st.write("Stock Data")
-    # st.dataframe(df)
+    st.dataframe(df)
 
     # Feature Engineering
     df['Lag 1-day'] = df['Close'].shift(1)
