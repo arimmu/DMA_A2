@@ -164,10 +164,10 @@ with col1:
     calculate_MA(df_close)
     if next_close_prediction < df_close['MA'].iloc[-1]:
         decision = 'Sell'
-        st.write(df_close['MA'].iloc[-1])
+        st.write(df['MA'].iloc[-1])
     else:
         decision = 'Buy'
-        st.write(df_close['MA'].iloc[-1])
+        st.write(df['MA'].iloc[-1])
      
 
 # Right Column: Visualizations
