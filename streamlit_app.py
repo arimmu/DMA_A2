@@ -175,10 +175,8 @@ with col1:
     predictions = []
     
     for i in range(3):
-    # Predict the next closing price
-    next_close_prediction = float(best_model.predict(last_data_point))
-    predictions.append(next_close_prediction)
-    
+        next_close_prediction = float(best_model.predict(last_data_point))
+         predictions.append(next_close_prediction)    
 
     df_close = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Close']])
     if next_close_prediction < df_close['Close'].iloc[-1]:
