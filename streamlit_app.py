@@ -1,14 +1,13 @@
 import streamlit as st
 import yfinance as yf
 import pandas as pd
-from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
+from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
 from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score, roc_auc_score, mean_squared_error
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
 from datetime import timedelta
+
 # Streamlit app title
 st.title("Stock Market Prediction App")
 
@@ -25,9 +24,6 @@ with col1:
 
     # Load data from Yahoo Finance
     df = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Open', 'Close', 'Volume', 'High', 'Low']])
-
-    # st.write("Stock Data")
-    # st.dataframe(df)
 
     # Feature Engineering
     df['Lag 1-day'] = df['Close'].shift(1)
@@ -91,9 +87,6 @@ with col1:
     # Drop rows with any NaN values
     df = df.dropna()
 
-    # Initialize the LabelEncoder
-    label_encoder = LabelEncoder()
-
     # Create signal 
     df['signal'] = np.where(df['MACD'] > df['MACD_Signal'], 1, 0)
 
@@ -109,64 +102,68 @@ with col1:
     # Train-Test-Split
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=42)
 
-    # Model Creation: K-NN Classifier
-    knn = KNeighborsClassifier(n_neighbors=3)
-    knn.fit(X_train, y_train)
-    y_pred = knn.predict(X_test)
-
-    accuracy_train = knn.score(X_train, y_train)
-    accuracy_test = knn.score(X_test, y_test)
-    accuracy = accuracy_score(y_test, y_pred)
-    recall = recall_score(y_test, y_pred)
-    precision = precision_score(y_test, y_pred)
-    f1_score = f1_score(y_test, y_pred)
- 
-    # AUC Calculation
-    prob_knn = knn.predict_proba(X_test)[:, 1]
-    auc_knn = roc_auc_score(y_test, prob_knn)
-    #st.write(f'AUC: {auc_knn:.2f}')
+    # Model Creation: Gradient Boosting Classifier
+    gb_classifier = GradientBoostingClassifier()
     
-    X = df[selected_features].drop("Close", axis=1)  # Features
-    y = df['Close']
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3, random_state=10)
-    
-    # K-NN Regressor for Prediction
-    knn_reg = KNeighborsRegressor()
-
-    # Parameter grid for KNN regressor
-    params_knn = {
-        'n_neighbors': [3, 5, 7],
-        'weights': ['uniform', 'distance'],
-        'p': [1, 2]
+    # Parameter grid for Gradient Boosting Classifier
+    params_gb_classifier = {
+        'n_estimators': [100, 200],
+        'learning_rate': [0.01, 0.1],
+        'max_depth': [3, 5],
+        'subsample': [0.8, 1.0]
     }
-
-    # Grid Search
-    grid_knn = GridSearchCV(estimator=knn_reg, param_grid=params_knn, scoring='neg_mean_squared_error', cv=3, n_jobs=-1)
-    grid_knn.fit(X_train, y_train)
-
-    # Display Best Hyperparameters
-    best_hyperparams = grid_knn.best_params_
-    #st.write('Best hyperparameters:', best_hyperparams)
+    
+    # Grid Search for Classifier
+    grid_gb_classifier = GridSearchCV(estimator=gb_classifier, param_grid=params_gb_classifier, scoring='accuracy', cv=3, n_jobs=-1)
+    grid_gb_classifier.fit(X_train, y_train)
 
     # Best model predictions
-    best_model = grid_knn.best_estimator_
-    y_pred = best_model.predict(X_test)
+    best_classifier = grid_gb_classifier.best_estimator_
+    y_pred_class = best_classifier.predict(X_test)
+
+    # Calculate performance metrics for classifier
+    accuracy = accuracy_score(y_test, y_pred_class)
+    recall = recall_score(y_test, y_pred_class)
+    precision = precision_score(y_test, y_pred_class)
+    f1 = f1_score(y_test, y_pred_class)
+
+    # AUC Calculation
+    prob_gb_class = best_classifier.predict_proba(X_test)[:, 1]
+    auc_gb = roc_auc_score(y_test, prob_gb_class)
+    
+    # Regression for Price Prediction
+    X_reg = df[selected_features].drop("Close", axis=1)  # Features
+    y_reg = df['Close']
+    X_train_reg, X_test_reg, y_train_reg, y_test_reg = train_test_split(X_reg, y_reg, test_size=0.3, random_state=10)
+
+    # Model Creation: Gradient Boosting Regressor
+    gb_regressor = GradientBoostingRegressor()
+    
+    # Parameter grid for Gradient Boosting Regressor
+    params_gb_regressor = {
+        'n_estimators': [100, 200],
+        'learning_rate': [0.01, 0.1],
+        'max_depth': [3, 5],
+        'subsample': [0.8, 1.0]
+    }
+    
+    # Grid Search for Regressor
+    grid_gb_regressor = GridSearchCV(estimator=gb_regressor, param_grid=params_gb_regressor, scoring='neg_mean_squared_error', cv=3, n_jobs=-1)
+    grid_gb_regressor.fit(X_train_reg, y_train_reg)
+
+    # Best model predictions
+    best_regressor = grid_gb_regressor.best_estimator_
+    y_pred_reg = best_regressor.predict(X_test_reg)
 
     # RMSE Calculation
-    rmse_test = np.sqrt(mean_squared_error(y_test, y_pred))
-    #st.write(f'Test set RMSE of K-NN regressor: {rmse_test:.2f}')
+    rmse_test = np.sqrt(mean_squared_error(y_test_reg, y_pred_reg))
 
     # Real-time Prediction for Next 1 Day
-    last_data_point = X_test.iloc[-1, :].values.reshape(1, -1)
-    next_close_prediction = float(best_model.predict(last_data_point))
+    last_data_point = X_test_reg.iloc[-1, :].values.reshape(1, -1)
+    next_close_prediction = float(best_regressor.predict(last_data_point))
 
     df_close = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Close']])
-    if next_close_prediction < df_close['Close'].iloc[-1]:
-        decision = 'Sell'
-        st.write(df_close['Close'].iloc[-1])
-    else:
-        decision = 'Buy'
-        #st.write(df_close['Close'].iloc[-1])    
+    decision = 'Buy' if next_close_prediction >= df_close['Close'].iloc[-1] else 'Sell'
 
 # Right Column: Visualizations
 with col2:
@@ -184,8 +181,6 @@ with col2:
     # Table of model performance metrics
     metrics_data = {
         "Classifier Performance Metrics": [
-            "Accuracy on training set", 
-            "Accuracy on test set", 
             "Accuracy", 
             "Recall", 
             "Precision", 
@@ -193,31 +188,21 @@ with col2:
             "AUC"
         ],
         "Score": [
-            f"{accuracy_train:.3f}", 
-            f"{accuracy_test:.3f}", 
             f"{accuracy:.2f}", 
             f"{recall:.2f}", 
             f"{precision:.2f}", 
-            f"{f1_score:.2f}", 
-            f"{auc_knn:.2f}"
+            f"{f1:.2f}", 
+            f"{auc_gb:.2f}"
         ],
         "Prediction Metrics": [ 
             "Test set RMSE",  
             "Next 1 Day Price Prediction", 
-            "Decision", 
-            "", 
-            "", 
-            "",
-            ""
+            "Decision"
         ],
         "Result": [
             f"{rmse_test:.2f}", 
-            round(next_close_prediction,2),
-            decision,
-            "",
-            "",
-            "",  
-            ""
+            round(next_close_prediction, 2),
+            decision
         ]
     }
 
@@ -227,6 +212,3 @@ with col2:
     # Display the table below the chart
     st.write("### Model Performance Metrics")
     st.table(metrics_df)
-    
-
-
