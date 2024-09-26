@@ -178,5 +178,6 @@ with col1:
 
 # Right Column: Visualizations
 with col2:
+    fig, ax = plt.subplots()
     # Plotting the stock data on the right side
     st.line_chart(df[['Close', 'MA_7', 'EMA_12', 'EMA_22']])
