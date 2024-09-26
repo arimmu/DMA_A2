@@ -147,7 +147,7 @@ with col1:
 
     # Parameter grid for KNN regressor
     params_knn = {
-        'n_neighbors': [3, 5, 7, 9],
+        'n_neighbors': [3, 5, 7],
         'weights': ['uniform', 'distance'],
         'p': [1, 2]
     }
