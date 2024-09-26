@@ -176,7 +176,9 @@ with col1:
     
     for i in range(3):
         next_close_prediction = float(best_model.predict(last_data_point))
-        predictions.append(next_close_prediction)    
+        predictions.append(next_close_prediction)
+        last_data_point = np.roll(last_data_point, shift=-1)  # Shift the data point to update the window
+        last_data_point[0, -1] = next_close_prediction
 
     df_close = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Close']])
     if next_close_prediction < df_close['Close'].iloc[-1]:
