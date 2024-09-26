@@ -260,7 +260,7 @@ with col2:
             predictions[1],
             predictions[2],
             short_decision,  
-            "",
+            next_close_prediction,
             ""
         ]
     }
