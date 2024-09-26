@@ -174,12 +174,18 @@ with col1:
 
     df_close = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Close']])
     if next_close_prediction < df_close['Close'].iloc[-1]:
-        decision = 'Sell'
+        short_decision = 'Sell'
         #st.write(df_close['Close'].iloc[-1])
     else:
-        decision = 'Buy'
+        long_decision = 'Buy'
         #st.write(df_close['Close'].iloc[-1])
-       
+
+    if next_close_prediction < df['EMA_22'].iloc[-1]:
+        long_decision = 'Sell'
+        #st.write(df_close['Close'].iloc[-1])
+    else:
+        long_decision = 'Buy'
+        
     #st.write(next_close_prediction)
     #next_price = next_close_prediction
     #prediction_close_price = []
@@ -234,8 +240,8 @@ with col2:
         "Prediction Metrics": [ 
             "Test set RMSE", 
             "Next Prediction Price", 
-            "Decision", 
-            "", 
+            "Short-Term Decision", 
+            "Long-Term Decision", 
             "", 
             "", 
             ""
@@ -243,8 +249,8 @@ with col2:
         "Result": [
             f"{rmse_test:.2f}", 
             f"{next_close_prediction:.2f}", 
-            decision, 
-            "", 
+            short_decision, 
+            long_decision,  
             "",
             "", 
             ""
