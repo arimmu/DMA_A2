@@ -179,6 +179,28 @@ with col1:
 
 # Right Column: Visualizations
 with col2:
-    fig, ax = plt.subplots()
+   # fig, ax = plt.subplots()
     # Plotting the stock data on the right side
-    st.line_chart(df[['Close', 'MA_7', 'EMA_12', 'EMA_22']])
+    #st.line_chart(df[['Close', 'MA_7', 'EMA_12', 'EMA_22']])
+
+  # Plotting the stock data on the right side using Matplotlib for more control
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.plot(df.index, df['Close'], label='Close')
+    ax.plot(df.index, df['MA_7'], label='MA 7-day')
+    ax.plot(df.index, df['EMA_12'], label='EMA 12-day')
+    ax.plot(df.index, df['EMA_22'], label='EMA 22-day')
+
+    # Adjust y-axis limits to minimize blank space
+    ax.set_ylim([df['Close'].min() * 0.95, df['Close'].max() * 1.05])
+
+    # Improve x-axis date formatting for better readability
+    ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: pd.to_datetime(x).strftime('%b %d')))
+    fig.autofmt_xdate()  # Auto-rotate the date labels for better readability
+
+    # Set labels and title
+    ax.set_xlabel("Date")
+    ax.set_ylabel("Price")
+    ax.set_title(f"Price Chart of {ticker}")
+
+    ax.legend()
+    st.pyplot(fig)
