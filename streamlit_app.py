@@ -179,13 +179,13 @@ with col1:
 
 # Right Column: Visualizations
 with col2:
-   # fig, ax = plt.subplots()
-    # Plotting the stock data on the right side
-    #st.line_chart(df[['Close', 'MA_7', 'EMA_12', 'EMA_22']])
+   # Adjust y-axis limits by narrowing the range to eliminate gaps
+    min_price = df[['Close', 'MA_7', 'EMA_12', 'EMA_22']].min().min() * 0.98
+    max_price = df[['Close', 'MA_7', 'EMA_12', 'EMA_22']].max().max() * 1.02
 
-  # Plotting the stock data on the right side using Matplotlib for more control
-    min_price = df[['Close', 'MA_7', 'EMA_12', 'EMA_22']].min().min() * 0.95
-    max_price = df[['Close', 'MA_7', 'EMA_12', 'EMA_22']].max().max() * 1.05
+    # Filter the dataframe to show a tighter y-range (relevant values)
+    filtered_df = df[['Close', 'MA_7', 'EMA_12', 'EMA_22']].copy()
+    filtered_df = filtered_df[(filtered_df > min_price) & (filtered_df < max_price)]
 
-    # Create the line chart using Streamlit's built-in st.line_chart
-    st.line_chart(df[['Close', 'MA_7', 'EMA_12', 'EMA_22']], use_container_width=True, height=400)
+    # Display the line chart without unnecessary gaps
+    st.line_chart(filtered_df, use_container_width=True)
