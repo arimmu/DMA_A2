@@ -241,7 +241,7 @@ metrics_data = {
     ],
     "More Results": [
         f"{rmse_test:.2f}", 
-        f"{next_close_prediction:.2f}", 
+        st.write(next_close_prediction), 
         "", 
         "", 
         "",
