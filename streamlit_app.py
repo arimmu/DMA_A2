@@ -1,9 +1,9 @@
 import streamlit as st
 import yfinance as yf
 import pandas as pd
-from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
-from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score, roc_auc_score, mean_squared_error
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression, LinearRegression
+from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score, mean_squared_error
 import numpy as np
 import matplotlib.pyplot as plt
 from datetime import timedelta
@@ -90,77 +90,49 @@ with col1:
     # Create signal 
     df['signal'] = np.where(df['MACD'] > df['MACD_Signal'], 1, 0)
 
-    # Selected features for prediction
-    selected_features = ['EMA_22', 'ROC_5', 'RSI', 'EMA_12', 'MA_7', 'Close', 'Next 2-day',
-                         'MACD_Signal', 'Price_range', 'Lag 3-day', 'Next 1-day', 'Low',
-                         'changes_%_in_volume', 'Volatility_7', 'Lag 2-day', 'Next 3-day',
-                         'MACD', 'High', 'Open', 'Lag 1-day']
+    # Selected features for classification
+    selected_features_class = ['EMA_22', 'ROC_5', 'RSI', 'EMA_12', 'MA_7', 'Lag 3-day']
+    X_class = df[selected_features_class]  # Features
+    y_class = df['signal']  # Target variable
 
-    X = df[selected_features]  # Features
-    y = df['signal']  # Target variable
+    # Train-Test-Split for Classification
+    X_train_class, X_test_class, y_train_class, y_test_class = train_test_split(X_class, y_class, test_size=0.4, random_state=42)
 
-    # Train-Test-Split
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=42)
+    # Model Creation: Logistic Regression
+    log_reg = LogisticRegression(max_iter=200)
 
-    # Model Creation: Gradient Boosting Classifier
-    gb_classifier = GradientBoostingClassifier()
-    
-    # Parameter grid for Gradient Boosting Classifier
-    params_gb_classifier = {
-        'n_estimators': [100, 200],
-        'learning_rate': [0.01, 0.1],
-        'max_depth': [3, 5],
-        'subsample': [0.8, 1.0]
-    }
-    
-    # Grid Search for Classifier
-    grid_gb_classifier = GridSearchCV(estimator=gb_classifier, param_grid=params_gb_classifier, scoring='accuracy', cv=3, n_jobs=-1)
-    grid_gb_classifier.fit(X_train, y_train)
+    # Train the model
+    log_reg.fit(X_train_class, y_train_class)
 
-    # Best model predictions
-    best_classifier = grid_gb_classifier.best_estimator_
-    y_pred_class = best_classifier.predict(X_test)
+    # Predictions
+    y_pred_class = log_reg.predict(X_test_class)
 
-    # Calculate performance metrics for classifier
-    accuracy = accuracy_score(y_test, y_pred_class)
-    recall = recall_score(y_test, y_pred_class)
-    precision = precision_score(y_test, y_pred_class)
-    f1 = f1_score(y_test, y_pred_class)
+    # Calculate performance metrics for classification
+    accuracy = accuracy_score(y_test_class, y_pred_class)
+    recall = recall_score(y_test_class, y_pred_class)
+    precision = precision_score(y_test_class, y_pred_class)
+    f1 = f1_score(y_test_class, y_pred_class)
 
-    # AUC Calculation
-    prob_gb_class = best_classifier.predict_proba(X_test)[:, 1]
-    auc_gb = roc_auc_score(y_test, prob_gb_class)
-    
     # Regression for Price Prediction
-    X_reg = df[selected_features].drop("Close", axis=1)  # Features
+    X_reg = df[selected_features_class + ['Close']].drop("Close", axis=1)  # Features
     y_reg = df['Close']
     X_train_reg, X_test_reg, y_train_reg, y_test_reg = train_test_split(X_reg, y_reg, test_size=0.3, random_state=10)
 
-    # Model Creation: Gradient Boosting Regressor
-    gb_regressor = GradientBoostingRegressor()
-    
-    # Parameter grid for Gradient Boosting Regressor
-    params_gb_regressor = {
-        'n_estimators': [100, 200],
-        'learning_rate': [0.01, 0.1],
-        'max_depth': [3, 5],
-        'subsample': [0.8, 1.0]
-    }
-    
-    # Grid Search for Regressor
-    grid_gb_regressor = GridSearchCV(estimator=gb_regressor, param_grid=params_gb_regressor, scoring='neg_mean_squared_error', cv=3, n_jobs=-1)
-    grid_gb_regressor.fit(X_train_reg, y_train_reg)
+    # Model Creation: Linear Regression
+    lin_reg = LinearRegression()
 
-    # Best model predictions
-    best_regressor = grid_gb_regressor.best_estimator_
-    y_pred_reg = best_regressor.predict(X_test_reg)
+    # Train the model
+    lin_reg.fit(X_train_reg, y_train_reg)
 
-    # RMSE Calculation
+    # Predictions
+    y_pred_reg = lin_reg.predict(X_test_reg)
+
+    # RMSE Calculation for Regression
     rmse_test = np.sqrt(mean_squared_error(y_test_reg, y_pred_reg))
 
     # Real-time Prediction for Next 1 Day
     last_data_point = X_test_reg.iloc[-1, :].values.reshape(1, -1)
-    next_close_prediction = float(best_regressor.predict(last_data_point))
+    next_close_prediction = float(lin_reg.predict(last_data_point))
 
     df_close = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Close']])
     decision = 'Buy' if next_close_prediction >= df_close['Close'].iloc[-1] else 'Sell'
@@ -184,15 +156,13 @@ with col2:
             "Accuracy", 
             "Recall", 
             "Precision", 
-            "F1", 
-            "AUC"
+            "F1"
         ],
         "Score": [
             f"{accuracy:.2f}", 
             f"{recall:.2f}", 
             f"{precision:.2f}", 
-            f"{f1:.2f}", 
-            f"{auc_gb:.2f}"
+            f"{f1:.2f}"
         ],
         "Prediction Metrics": [ 
             "Test set RMSE",  
