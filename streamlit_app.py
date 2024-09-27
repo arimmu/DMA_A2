@@ -106,7 +106,7 @@ with col1:
     y = df['signal']  # Target variable
 
     # Train-Test-Split
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=10)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=10)
 
     # Model Creation: Naive Bayes Classifier
     nb = GaussianNB()
@@ -125,9 +125,9 @@ with col1:
     auc_nb = roc_auc_score(y_test, prob_nb)
     #st.write(f'AUC: {auc_knn:.2f}')
     
-    X = df[selected_features].drop("Close", axis=1)  # Features
-    y = df['Close']
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3, random_state=10)
+    X_reg = df[selected_features].drop("Close", axis=1)  # Features
+    y_reg = df['Close']
+    X_train, X_test, y_train, y_test = train_test_split(X_reg, y_reg, test_size = 0.3, random_state=10)
 
     rf_regressor = RandomForestRegressor()
 
