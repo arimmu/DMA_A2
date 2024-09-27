@@ -191,22 +191,26 @@ with col2:
         "Trend Classifier": [
             "% Uptrends", 
             "% Downtrends", 
+            "",
             ""
         ],
         "%": [
             f"{Percentage_Uptrends:.2f}", 
             f"{Percentage_Downtrends:.2f}", 
+            "",
             ""
         ],
-        "Prediction Metrics": [ 
+        "Prediction": [ 
             "Test set RMSE",  
-            "Next Day Price Prediction", 
-            "Decision"
+            "Next 1 Day Price Prediction", 
+            "Next 2 Day Price Prediction",
+            "Next 3 Day Price Prediction"
         ],
         "Result": [
             f"{rmse_test:.2f}", 
-            round(next_close_prediction,2),
-            prediction[0]
+            round(prediction[0],2),
+            round(prediction[1],2),
+            round(prediction[2],2)
         ]
     }
 
