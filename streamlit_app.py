@@ -113,18 +113,6 @@ with col1:
     nb.fit(X_train, y_train)
     y_pred = nb.predict(X_test)
 
-    #accuracy_train = nb.score(X_train, y_train)
-    #accuracy_test = nb.score(X_test, y_test)
-    #accuracy = accuracy_score(y_test, y_pred)
-    #recall = recall_score(y_test, y_pred)
-    #precision = precision_score(y_test, y_pred)
-    #f1_score = f1_score(y_test, y_pred)
- 
-    # AUC Calculation
-    #prob_nb = nb.predict_proba(X_test)[:, 1]
-    #auc_nb = roc_auc_score(y_test, prob_nb)
-    #st.write(f'AUC: {auc_knn:.2f}')
-    # Count Uptrend (1) and Downtrend (0) in the predictions
     uptrend_count = sum(y_pred == 1)
     downtrend_count = sum(y_pred == 0)  
     total_predictions = len(y_pred)
@@ -165,7 +153,6 @@ with col1:
 
     # RMSE Calculation
     rmse_test = np.sqrt(mean_squared_error(y_test, y_pred))
-    #st.write(f'Test set RMSE of K-NN regressor: {rmse_test:.2f}')
 
     # Real-time Prediction for Next 1 Day
     last_data_point = X_test.iloc[-1, :].values.reshape(1, -1)
@@ -175,11 +162,8 @@ with col1:
     calculate_MA(df_close)
     if next_close_prediction < df['MA'].iloc[-1]:
         decision = 'Sell'
-        st.write(df['MA'].iloc[-1])
     else:
         decision = 'Buy'
-        st.write(df['MA'].iloc[-1])
-     
 
 # Right Column: Visualizations
 with col2:
@@ -203,8 +187,8 @@ with col2:
             ""
         ],
         "%": [
-            f"{Percentage_Uptrends:.3f}", 
-            f"{Percentage_Downtrends:.3f}", 
+            f"{Percentage_Uptrends:.2f}", 
+            f"{Percentage_Downtrends:.2f}", 
             ""
         ],
         "Prediction Metrics": [ 
