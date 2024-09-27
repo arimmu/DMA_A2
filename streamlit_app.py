@@ -129,27 +129,32 @@ with col1:
     X = df[selected_features].drop("Close", axis=1)  # Features
     y = df['Close']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3, random_state=10)
-    
-    # K-NN Regressor for Prediction
-    knn_reg = KNeighborsRegressor()
 
-    # Parameter grid for KNN regressor
-    params_knn = {
-        'n_neighbors': [3, 5, 7, 9],
-        'weights': ['uniform', 'distance'],
-        'p': [1, 2]
+    rf_regressor = RandomForestRegressor()
+
+    # Define the parameter grid for the RandomForestRegressor
+    params_rf = {
+        'n_estimators': [100, 200],
+        'max_depth': [10, 20, None],
+        'min_samples_split': [2, 5, 10]
     }
 
-    # Grid Search
-    grid_knn = GridSearchCV(estimator=knn_reg, param_grid=params_knn, scoring='neg_mean_squared_error', cv=3, n_jobs=-1)
-    grid_knn.fit(X_train, y_train)
+    # Set up the grid search with cross-validation
+    grid_rf = GridSearchCV(estimator=rf_regressor,
+                       param_grid=params_rf,
+                       scoring='neg_mean_squared_error',  # Regression scoring
+                       cv=3,
+                       n_jobs=-1,
+                       verbose=1)
+
+    grid_rf.fit(X_train, y_train)
 
     # Display Best Hyperparameters
-    best_hyperparams = grid_knn.best_params_
+    best_hyperparams = grid_rf.best_params_
     #st.write('Best hyperparameters:', best_hyperparams)
 
     # Best model predictions
-    best_model = grid_knn.best_estimator_
+    best_model = grid_rf.best_estimator_
     y_pred = best_model.predict(X_test)
 
     # RMSE Calculation
