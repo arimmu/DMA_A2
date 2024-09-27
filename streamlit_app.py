@@ -200,9 +200,9 @@ with col2:
             
         ],
         "Prediction": [  
-            "Next 1 Day Price Prediction", 
-            "Next 2 Day Price Prediction",
-            "Next 3 Day Price Prediction"
+            "Next 1 Day", 
+            "Next 2 Day",
+            "Next 3 Day"
         ],
         "Price Prediction": [ 
             round(prediction[0],2),
