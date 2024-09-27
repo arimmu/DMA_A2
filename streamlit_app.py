@@ -25,18 +25,6 @@ with col1:
     endDate = st.date_input("End Date", value=pd.to_datetime("2024-09-23")) + timedelta(days=1)
     tf = "1d"  # Interval
 
-    # Convert the DataFrame to CSV
-    csv = metrics_df.to_csv(index=False)
-    csv_bytes = io.BytesIO(csv.encode())
-
-    # Add a download button
-    st.download_button(
-        label="Download Report as CSV",
-        data=csv_bytes,
-        file_name='stock_report.csv',
-        mime='text/csv'
-    )
-
     # Load data from Yahoo Finance
     df = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Open', 'Close', 'Volume', 'High', 'Low']])
 
