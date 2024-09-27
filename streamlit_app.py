@@ -165,12 +165,11 @@ with col1:
         last_data_point = np.roll(last_data_point, shift=1, axis=1)
         last_data_point[0, 0] = next_close
     
-    #df_close = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Close']])
-    #calculate_MA(df_close)
-    #if next_close_prediction < df['MA'].iloc[-1]:
-     #   decision = 'Sell'
-    #else:
-     #   decision = 'Buy'
+    
+    if Percentage_Uptrends < Percentage_Downtrends:
+        decision = 'Sell'
+    else:
+        decision = 'Buy'
 
 # Right Column: Visualizations
 with col2:
@@ -191,23 +190,21 @@ with col2:
         "Trend Classifier": [
             "% Uptrends", 
             "% Downtrends", 
-            "",
-            ""
+            "Decision"
+           
         ],
         "%": [
             f"{Percentage_Uptrends:.2f}", 
             f"{Percentage_Downtrends:.2f}", 
-            "",
-            ""
+            decision
+            
         ],
-        "Prediction": [ 
-            "Test set RMSE",  
+        "Prediction": [  
             "Next 1 Day Price Prediction", 
             "Next 2 Day Price Prediction",
             "Next 3 Day Price Prediction"
         ],
-        "Result": [
-            f"{rmse_test:.2f}", 
+        "Price Prediction": [ 
             round(prediction[0],2),
             round(prediction[1],2),
             round(prediction[2],2)
@@ -218,5 +215,5 @@ with col2:
     metrics_df = pd.DataFrame(metrics_data)
 
     # Display the table below the chart
-    st.write("### Model Performance Metrics")
+    st.write("### Model Predictions")
     st.table(metrics_df)
