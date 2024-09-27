@@ -106,25 +106,32 @@ with col1:
     y = df['signal']  # Target variable
 
     # Train-Test-Split
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=10)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=10)
 
     # Model Creation: Naive Bayes Classifier
     nb = GaussianNB()
     nb.fit(X_train, y_train)
     y_pred = nb.predict(X_test)
 
-    accuracy_train = nb.score(X_train, y_train)
-    accuracy_test = nb.score(X_test, y_test)
-    accuracy = accuracy_score(y_test, y_pred)
-    recall = recall_score(y_test, y_pred)
-    precision = precision_score(y_test, y_pred)
-    f1_score = f1_score(y_test, y_pred)
+    #accuracy_train = nb.score(X_train, y_train)
+    #accuracy_test = nb.score(X_test, y_test)
+    #accuracy = accuracy_score(y_test, y_pred)
+    #recall = recall_score(y_test, y_pred)
+    #precision = precision_score(y_test, y_pred)
+    #f1_score = f1_score(y_test, y_pred)
  
     # AUC Calculation
-    prob_nb = nb.predict_proba(X_test)[:, 1]
-    auc_nb = roc_auc_score(y_test, prob_nb)
+    #prob_nb = nb.predict_proba(X_test)[:, 1]
+    #auc_nb = roc_auc_score(y_test, prob_nb)
     #st.write(f'AUC: {auc_knn:.2f}')
-    
+    # Count Uptrend (1) and Downtrend (0) in the predictions
+    uptrend_count = sum(y_pred == 1)
+    downtrend_count = sum(y_pred == 0)  
+    total_predictions = len(y_pred)
+
+    Percentage_Uptrends = (uptrend_count / total_predictions) * 100
+    Percentage_Downtrends = (downtrend_count_count / total_predictions) * 100
+
     X_reg = df[selected_features].drop("Close", axis=1)  # Features
     y_reg = df['Close']
     X_train, X_test, y_train, y_test = train_test_split(X_reg, y_reg, test_size = 0.3, random_state=10)
@@ -190,32 +197,20 @@ with col2:
 
     # Table of model performance metrics
     metrics_data = {
-        "Classifier Performance Metrics": [
-            "Accuracy on training set", 
-            "Accuracy on test set", 
-            "Accuracy", 
-            "Recall", 
-            "Precision", 
-            "F1", 
-            "AUC"
+        "Trend Classifier": [
+            "% Uptrends", 
+            "% Downtrends", 
+            ""
         ],
-        "Score": [
-            f"{accuracy_train:.3f}", 
-            f"{accuracy_test:.3f}", 
-            f"{accuracy:.2f}", 
-            f"{recall:.2f}", 
-            f"{precision:.2f}", 
-            f"{f1_score:.2f}", 
-            f"{auc_nb:.2f}"
+        "%": [
+            f"{Percentage_Uptrends:.3f}", 
+            f"{Percentage_Downtrends:.3f}", 
+            ""
         ],
         "Prediction Metrics": [ 
             "Test set RMSE",  
             "Next Day Price Prediction", 
-            "Decision", 
-            "", 
-            "", 
-            "",
-            ""
+            "Decision"
         ],
         "Result": [
             f"{rmse_test:.2f}", 
