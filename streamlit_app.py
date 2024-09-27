@@ -206,7 +206,7 @@ with col2:
         "Result": [
             f"{rmse_test:.2f}", 
             round(next_close_prediction,2),
-            prediction[-1]
+            prediction[0]
         ]
     }
 
