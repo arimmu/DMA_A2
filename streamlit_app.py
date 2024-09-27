@@ -206,7 +206,7 @@ with col2:
             f"{recall:.2f}", 
             f"{precision:.2f}", 
             f"{f1_score:.2f}", 
-            f"{auc_knn:.2f}"
+            f"{auc_nb:.2f}"
         ],
         "Prediction Metrics": [ 
             "Test set RMSE",  
