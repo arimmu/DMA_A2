@@ -212,7 +212,6 @@ with col2:
             round(prediction[2],2)
         ]
     }
-    st.write(f"Test set RMSE of rf: {rmse_test:.2f}")
 
     # Convert the dictionary to a DataFrame
     metrics_df = pd.DataFrame(metrics_data)
@@ -220,3 +219,5 @@ with col2:
     # Display the table below the chart
     st.write("### Model Predictions")
     st.table(metrics_df)
+    st.write(f"Test set RMSE of rf: {rmse_test:.2f}")
+
