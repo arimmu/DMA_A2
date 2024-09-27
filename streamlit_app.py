@@ -165,6 +165,8 @@ with col1:
         last_data_point = np.roll(last_data_point, shift=1, axis=1)
         last_data_point[0, 0] = next_close
     
+    df_close = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Close']])
+    calculate_MA(df_close)
     
     if Percentage_Uptrends < Percentage_Downtrends:
         decision = 'Sell'
@@ -174,8 +176,8 @@ with col1:
 # Right Column: Visualizations
 with col2:
     fig, ax = plt.subplots(figsize=(10, 6))
-    ax.plot(df.index, df['Close'], label='Price')
-    ax.plot(df.index, df['MA'], label='MA')
+    ax.plot(df_close.index, df_close['Close'], label='Price')
+    ax.plot(df_close.index, df_close['MA'], label='MA')
 
     # Set labels and title
     ax.set_xlabel("Date")
