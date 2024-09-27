@@ -130,7 +130,7 @@ with col1:
     total_predictions = len(y_pred)
 
     Percentage_Uptrends = (uptrend_count / total_predictions) * 100
-    Percentage_Downtrends = (downtrend_count_count / total_predictions) * 100
+    Percentage_Downtrends = (downtrend_count / total_predictions) * 100
 
     X_reg = df[selected_features].drop("Close", axis=1)  # Features
     y_reg = df['Close']
