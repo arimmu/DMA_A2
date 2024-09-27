@@ -27,9 +27,6 @@ with col1:
     # Load data from Yahoo Finance
     df = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Open', 'Close', 'Volume', 'High', 'Low']])
 
-    # st.write("Stock Data")
-    # st.dataframe(df)
-
     # Feature Engineering
     df['Lag 1-day'] = df['Close'].shift(1)
     df['Lag 2-day'] = df['Close'].shift(2)
@@ -108,23 +105,23 @@ with col1:
     y = df['signal']  # Target variable
 
     # Train-Test-Split
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=10)
 
-    # Model Creation: K-NN Classifier
-    knn = KNeighborsClassifier(n_neighbors=3)
-    knn.fit(X_train, y_train)
-    y_pred = knn.predict(X_test)
+    # Model Creation: Naive Bayes Classifier
+    nb = GaussianNB()
+    nb.fit(X_train, y_train)
+    y_pred = nb.predict(X_test)
 
-    accuracy_train = knn.score(X_train, y_train)
-    accuracy_test = knn.score(X_test, y_test)
+    accuracy_train = nb.score(X_train, y_train)
+    accuracy_test = nb.score(X_test, y_test)
     accuracy = accuracy_score(y_test, y_pred)
     recall = recall_score(y_test, y_pred)
     precision = precision_score(y_test, y_pred)
     f1_score = f1_score(y_test, y_pred)
  
     # AUC Calculation
-    prob_knn = knn.predict_proba(X_test)[:, 1]
-    auc_knn = roc_auc_score(y_test, prob_knn)
+    prob_nb = nb.predict_proba(X_test)[:, 1]
+    auc_nb = roc_auc_score(y_test, prob_nb)
     #st.write(f'AUC: {auc_knn:.2f}')
     
     X = df[selected_features].drop("Close", axis=1)  # Features
