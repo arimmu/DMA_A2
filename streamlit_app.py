@@ -158,12 +158,19 @@ with col1:
     last_data_point = X_test.iloc[-1, :].values.reshape(1, -1)
     next_close_prediction = float(best_model.predict(last_data_point))
 
-    df_close = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Close']])
-    calculate_MA(df_close)
-    if next_close_prediction < df['MA'].iloc[-1]:
-        decision = 'Sell'
-    else:
-        decision = 'Buy'
+    prediction =[]
+    for i in range(3):
+        next_close = best_model.predict(last_data_point)
+        prediction.append(next_close[0])
+        last_data_point = np.roll(last_data_point, shift=1, axis=1)
+        last_data_point[0, 0] = next_close
+    
+    #df_close = pd.DataFrame(yf.download(ticker, start=startDate, end=endDate, interval=tf)[['Close']])
+    #calculate_MA(df_close)
+    #if next_close_prediction < df['MA'].iloc[-1]:
+     #   decision = 'Sell'
+    #else:
+     #   decision = 'Buy'
 
 # Right Column: Visualizations
 with col2:
@@ -199,7 +206,7 @@ with col2:
         "Result": [
             f"{rmse_test:.2f}", 
             round(next_close_prediction,2),
-            decision
+            prediction[-1]
         ]
     }
 
